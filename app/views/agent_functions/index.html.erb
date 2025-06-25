@@ -1,0 +1,55 @@
+<h1>Manage Functions for <%= @agent.name %></h1>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Associated Functions</h3>
+    <% if @agent_functions.any? %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Function Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @agent_functions.each do |agent_function| %>
+            <tr>
+              <td><%= agent_function.function.name %></td>
+              <td>
+                <%= link_to 'Remove', workspace_agent_agent_function_path(@workspace, @agent, agent_function), 
+                            method: :delete, confirm: 'Are you sure?', class: 'btn btn-danger btn-sm' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No functions associated with this agent yet.</p>
+    <% end %>
+  </div>
+  
+  <div class="col-md-6">
+    <h3>Add Function</h3>
+    <% if @available_functions.any? %>
+      <%= form_with model: [@workspace, @agent, AgentFunction.new], local: true do |form| %>
+        <div class="form-group">
+          <%= form.label :function_id, 'Select Function' %>
+          <%= form.select :function_id, options_from_collection_for_select(@available_functions, :id, :name), 
+                          { prompt: 'Choose a function' }, { class: 'form-control' } %>
+        </div>
+        
+        <div class="actions">
+          <%= form.submit 'Associate Function', class: 'btn btn-success' %>
+        </div>
+      <% end %>
+    <% else %>
+      <p>All available functions are already associated with this agent.</p>
+      <%= link_to 'Create New Function', new_workspace_function_path(@workspace), class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to 'Back to Agent', [@workspace, @agent], class: 'btn btn-info' %>
+  <%= link_to 'Back to Agents', workspace_agents_path(@workspace), class: 'btn btn-secondary' %>
+</div>

@@ -1,0 +1,31 @@
+<h1><%= @llm.name %></h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>LLM Details</h3>
+    <p><strong>Name:</strong> <%= @llm.name %></p>
+    <p><strong>Provider:</strong> <%= @llm.provider %></p>
+    <p><strong>Model:</strong> <%= @llm.model %></p>
+    <p><strong>Workspace:</strong> <%= @workspace.name %></p>
+    
+    <h4>Configurations:</h4>
+    <pre><code><%= JSON.pretty_generate(@llm.configs) if @llm.configs %></code></pre>
+    
+    <h4>Agents using this LLM:</h4>
+    <% if @llm.agents.any? %>
+      <ul>
+        <% @llm.agents.each do |agent| %>
+          <li><%= link_to agent.name, [@workspace, agent] %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No agents are using this LLM yet.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to 'Edit', edit_workspace_llm_path(@workspace, @llm), class: 'btn btn-warning' %>
+  <%= link_to 'Back to LLMs', workspace_llms_path(@workspace), class: 'btn btn-secondary' %>
+  <%= link_to 'Back to Workspace', @workspace, class: 'btn btn-info' %>
+</div>

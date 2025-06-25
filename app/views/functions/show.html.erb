@@ -1,0 +1,18 @@
+<h1><%= @function.name %></h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Function Details</h3>
+    <p><strong>Name:</strong> <%= @function.name %></p>
+    <p><strong>Workspace:</strong> <%= @workspace.name %></p>
+    
+    <h4>Code:</h4>
+    <pre><code><%= @function.code %></code></pre>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to 'Edit', edit_workspace_function_path(@workspace, @function), class: 'btn btn-warning' %>
+  <%= link_to 'Back to Functions', workspace_functions_path(@workspace), class: 'btn btn-secondary' %>
+  <%= link_to 'Back to Workspace', @workspace, class: 'btn btn-info' %>
+</div>

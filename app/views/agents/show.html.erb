@@ -1,0 +1,31 @@
+<h1><%= @agent.name %></h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Agent Details</h3>
+    <p><strong>Name:</strong> <%= @agent.name %></p>
+    <p><strong>LLM:</strong> <%= @agent.llm.name %> (<%= @agent.llm.provider %> - <%= @agent.llm.model %>)</p>
+    <p><strong>Workspace:</strong> <%= @workspace.name %></p>
+    
+    <h4>Prompt:</h4>
+    <pre><%= @agent.prompt %></pre>
+    
+    <h4>Associated Functions (<%= @agent.functions.count %>):</h4>
+    <% if @agent.functions.any? %>
+      <ul>
+        <% @agent.functions.each do |function| %>
+          <li><%= link_to function.name, [@workspace, function] %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>No functions associated with this agent yet.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to 'Edit', edit_workspace_agent_path(@workspace, @agent), class: 'btn btn-warning' %>
+  <%= link_to 'Manage Functions', workspace_agent_agent_functions_path(@workspace, @agent), class: 'btn btn-secondary' %>
+  <%= link_to 'Back to Agents', workspace_agents_path(@workspace), class: 'btn btn-secondary' %>
+  <%= link_to 'Back to Workspace', @workspace, class: 'btn btn-info' %>
+</div>

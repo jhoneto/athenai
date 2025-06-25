@@ -1,0 +1,29 @@
+<h1>Functions - <%= @workspace.name %></h1>
+
+<%= link_to 'New Function', new_workspace_function_path(@workspace), class: 'btn btn-primary' %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Code Preview</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @functions.each do |function| %>
+      <tr>
+        <td><%= function.name %></td>
+        <td><%= truncate(function.code, length: 50) %></td>
+        <td>
+          <%= link_to 'Show', [@workspace, function], class: 'btn btn-info' %>
+          <%= link_to 'Edit', edit_workspace_function_path(@workspace, function), class: 'btn btn-warning' %>
+          <%= link_to 'Delete', [@workspace, function], method: :delete, 
+                      confirm: 'Are you sure?', class: 'btn btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back to Workspace', @workspace, class: 'btn btn-secondary' %>

@@ -1,0 +1,27 @@
+<h1><%= @workspace.name %></h1>
+
+<div class="row">
+  <div class="col-md-3">
+    <h3>Navigation</h3>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <%= link_to "Functions (#{@workspace.functions.count})", workspace_functions_path(@workspace) %>
+      </li>
+      <li class="list-group-item">
+        <%= link_to "LLMs (#{@workspace.llms.count})", workspace_llms_path(@workspace) %>
+      </li>
+      <li class="list-group-item">
+        <%= link_to "Agents (#{@workspace.agents.count})", workspace_agents_path(@workspace) %>
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-9">
+    <h3>Workspace Details</h3>
+    <p><strong>Name:</strong> <%= @workspace.name %></p>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to 'Edit', edit_workspace_path(@workspace), class: 'btn btn-warning' %>
+  <%= link_to 'Back', workspaces_path, class: 'btn btn-secondary' %>
+</div>

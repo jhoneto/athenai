@@ -1,0 +1,25 @@
+<h1>Edit Workspace</h1>
+
+<%= form_with model: @workspace, local: true do |form| %>
+  <% if @workspace.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(@workspace.errors.count, "error") %> prohibited this workspace from being saved:</h4>
+      <ul>
+        <% @workspace.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'Update Workspace', class: 'btn btn-success' %>
+    <%= link_to 'Show', @workspace, class: 'btn btn-info' %>
+    <%= link_to 'Back', workspaces_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>
