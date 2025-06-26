@@ -1,4 +1,4 @@
-class LlmsController < ApplicationController
+class LlmsController < BaseController
   before_action :set_workspace
   before_action :set_llm, only: [ :show, :edit, :update, :destroy ]
 
