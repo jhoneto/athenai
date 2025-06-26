@@ -130,9 +130,9 @@ RSpec.describe Llm, type: :model do
     let(:workspace) { create(:workspace) }
 
     it 'allows setting and getting store_accessor attributes' do
-      llm = create(:llm, workspace: workspace, 
-                   temperature: 0.8, 
-                   max_tokens: 1500, 
+      llm = create(:llm, workspace: workspace,
+                   temperature: 0.8,
+                   max_tokens: 1500,
                    top_p: 0.9,
                    api_key: 'sk-test123')
       llm.reload
@@ -146,7 +146,7 @@ RSpec.describe Llm, type: :model do
     it 'persists store_accessor attributes in configs column' do
       llm = create(:llm, workspace: workspace)
       llm.update(temperature: 1.2, api_url: 'https://api.example.com')
-      
+
       expect(llm.configs['temperature']).to eq(1.2)
       expect(llm.configs['api_url']).to eq('https://api.example.com')
     end
