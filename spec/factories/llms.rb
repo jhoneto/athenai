@@ -9,5 +9,13 @@ FactoryBot.define do
     top_p { 0.9 }
     timeout { 30 }
     association :workspace
+
+    trait :openai do
+      name { "GPT-4 Turbo" }
+      provider { "OpenAI" }
+      model { "gpt-4-turbo-preview" }
+      api_key { "sk-#{Faker::Alphanumeric.alphanumeric(number: 48)}" }
+      api_url { "https://api.openai.com/v1" }
+    end
   end
 end

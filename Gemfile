@@ -74,6 +74,9 @@ group :test do
 
   # Database cleaner for test isolation
   gem "database_cleaner-active_record", "~> 2.1"
+
+  # HTTP request stubbing for testing
+  gem "webmock", "~> 3.18"
 end
 
 gem "ruby_llm", "~> 1.3", ">= 1.3.1"
