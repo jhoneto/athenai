@@ -1,6 +1,6 @@
 class FunctionsController < ApplicationController
   before_action :set_workspace
-  before_action :set_function, only: [:show, :edit, :update, :destroy]
+  before_action :set_function, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @functions = @workspace.functions
@@ -15,9 +15,9 @@ class FunctionsController < ApplicationController
 
   def create
     @function = @workspace.functions.build(function_params)
-    
+
     if @function.save
-      redirect_to [@workspace, @function], notice: 'Function was successfully created.'
+      redirect_to [ @workspace, @function ], notice: "Function was successfully created."
     else
       render :new
     end
@@ -28,7 +28,7 @@ class FunctionsController < ApplicationController
 
   def update
     if @function.update(function_params)
-      redirect_to [@workspace, @function], notice: 'Function was successfully updated.'
+      redirect_to [ @workspace, @function ], notice: "Function was successfully updated."
     else
       render :edit
     end
@@ -36,7 +36,7 @@ class FunctionsController < ApplicationController
 
   def destroy
     @function.destroy
-    redirect_to workspace_functions_url(@workspace), notice: 'Function was successfully deleted.'
+    redirect_to workspace_functions_url(@workspace), notice: "Function was successfully deleted."
   end
 
   private

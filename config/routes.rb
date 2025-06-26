@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     resources :functions
     resources :llms
     resources :agents do
-      resources :agent_functions, only: [:index, :create, :destroy]
+      resources :agent_functions, only: [ :index, :create, :destroy ]
     end
   end
 end

@@ -1,5 +1,5 @@
 class WorkspacesController < ApplicationController
-  before_action :set_workspace, only: [:show, :edit, :update, :destroy]
+  before_action :set_workspace, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @workspaces = Workspace.all
@@ -14,9 +14,9 @@ class WorkspacesController < ApplicationController
 
   def create
     @workspace = Workspace.new(workspace_params)
-    
+
     if @workspace.save
-      redirect_to @workspace, notice: 'Workspace was successfully created.'
+      redirect_to @workspace, notice: "Workspace was successfully created."
     else
       render :new
     end
@@ -27,7 +27,7 @@ class WorkspacesController < ApplicationController
 
   def update
     if @workspace.update(workspace_params)
-      redirect_to @workspace, notice: 'Workspace was successfully updated.'
+      redirect_to @workspace, notice: "Workspace was successfully updated."
     else
       render :edit
     end
@@ -35,7 +35,7 @@ class WorkspacesController < ApplicationController
 
   def destroy
     @workspace.destroy
-    redirect_to workspaces_url, notice: 'Workspace was successfully deleted.'
+    redirect_to workspaces_url, notice: "Workspace was successfully deleted."
   end
 
   private

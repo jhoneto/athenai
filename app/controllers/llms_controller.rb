@@ -1,6 +1,6 @@
 class LlmsController < ApplicationController
   before_action :set_workspace
-  before_action :set_llm, only: [:show, :edit, :update, :destroy]
+  before_action :set_llm, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @llms = @workspace.llms
@@ -15,9 +15,9 @@ class LlmsController < ApplicationController
 
   def create
     @llm = @workspace.llms.build(llm_params)
-    
+
     if @llm.save
-      redirect_to [@workspace, @llm], notice: 'LLM was successfully created.'
+      redirect_to [ @workspace, @llm ], notice: "LLM was successfully created."
     else
       render :new
     end
@@ -28,7 +28,7 @@ class LlmsController < ApplicationController
 
   def update
     if @llm.update(llm_params)
-      redirect_to [@workspace, @llm], notice: 'LLM was successfully updated.'
+      redirect_to [ @workspace, @llm ], notice: "LLM was successfully updated."
     else
       render :edit
     end
@@ -36,7 +36,7 @@ class LlmsController < ApplicationController
 
   def destroy
     @llm.destroy
-    redirect_to workspace_llms_url(@workspace), notice: 'LLM was successfully deleted.'
+    redirect_to workspace_llms_url(@workspace), notice: "LLM was successfully deleted."
   end
 
   private

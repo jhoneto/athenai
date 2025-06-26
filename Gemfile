@@ -49,8 +49,14 @@ group :development, :test do
 
   gem "dotenv-rails", "~> 3.1"
 
+  # RSpec testing framework
+  gem "rspec-rails", "~> 6.0"
+  gem "factory_bot_rails", "~> 6.2"
+  gem "faker", "~> 3.2"
+
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  gem "rubocop-rspec", require: false
 end
 
 group :development do
@@ -62,4 +68,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Database cleaner for test isolation
+  gem "database_cleaner-active_record", "~> 2.1"
 end

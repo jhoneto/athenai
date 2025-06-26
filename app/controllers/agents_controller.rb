@@ -1,6 +1,6 @@
 class AgentsController < ApplicationController
   before_action :set_workspace
-  before_action :set_agent, only: [:show, :edit, :update, :destroy]
+  before_action :set_agent, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @agents = @workspace.agents.includes(:llm)
@@ -16,9 +16,9 @@ class AgentsController < ApplicationController
 
   def create
     @agent = @workspace.agents.build(agent_params)
-    
+
     if @agent.save
-      redirect_to [@workspace, @agent], notice: 'Agent was successfully created.'
+      redirect_to [ @workspace, @agent ], notice: "Agent was successfully created."
     else
       @llms = @workspace.llms
       render :new
@@ -31,7 +31,7 @@ class AgentsController < ApplicationController
 
   def update
     if @agent.update(agent_params)
-      redirect_to [@workspace, @agent], notice: 'Agent was successfully updated.'
+      redirect_to [ @workspace, @agent ], notice: "Agent was successfully updated."
     else
       @llms = @workspace.llms
       render :edit
@@ -40,7 +40,7 @@ class AgentsController < ApplicationController
 
   def destroy
     @agent.destroy
-    redirect_to workspace_agents_url(@workspace), notice: 'Agent was successfully deleted.'
+    redirect_to workspace_agents_url(@workspace), notice: "Agent was successfully deleted."
   end
 
   private
