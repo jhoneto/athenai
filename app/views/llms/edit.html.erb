@@ -1,9 +1,13 @@
-<h1>Edit LLM - <%= @workspace.name %></h1>
-
-<%= render 'form', 
-    model: [@workspace, @llm],
-    submit_text: 'Update LLM',
-    back_path: workspace_llms_path(@workspace),
-    selected_provider: @llm.provider %>
-
-<%= link_to 'Show', [@workspace, @llm], class: 'btn btn-info' %>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-900">Editar LLM - <%= @workspace.name %></h1>
+  </div>
+  
+  <div class="p-6">
+    <%= render 'form', 
+        model: [@workspace, @llm],
+        submit_text: 'Atualizar LLM',
+        back_path: workspace_llms_path(@workspace),
+        selected_provider: @llm.provider %>
+  </div>
+</div>

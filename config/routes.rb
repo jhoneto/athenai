@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "home/index"
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -11,7 +12,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "workspaces#index"
+  root "home#index"
 
   resources :workspaces do
     resources :functions

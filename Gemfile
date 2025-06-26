@@ -75,3 +75,5 @@ group :test do
   # Database cleaner for test isolation
   gem "database_cleaner-active_record", "~> 2.1"
 end
+
+gem "tailwindcss-rails", "~> 4.2"

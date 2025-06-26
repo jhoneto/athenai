@@ -2,7 +2,7 @@ class WorkspacesController < ApplicationController
   before_action :set_workspace, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @workspaces = Workspace.all
+    redirect_to root_path
   end
 
   def show
@@ -13,7 +13,7 @@ class WorkspacesController < ApplicationController
   end
 
   def create
-    @workspace = Workspace.new(workspace_params)
+    @workspace = current_user.workspaces.build(workspace_params)
 
     if @workspace.save
       redirect_to @workspace, notice: "Workspace was successfully created."
@@ -42,6 +42,8 @@ class WorkspacesController < ApplicationController
 
   def set_workspace
     @workspace = Workspace.find(params[:id])
+    access = workspace_access(@workspace)
+    redirect_to root_path unless access[:owner] || access[:access_llm] || access[:access_agents] || access[:access_functions]
   end
 
   def workspace_params

@@ -1,27 +1,131 @@
-<h1><%= @workspace.name %></h1>
+<% access = workspace_access(@workspace) %>
 
-<div class="row">
-  <div class="col-md-3">
-    <h3>Navigation</h3>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <%= link_to "Functions (#{@workspace.functions.count})", workspace_functions_path(@workspace) %>
-      </li>
-      <li class="list-group-item">
-        <%= link_to "LLMs (#{@workspace.llms.count})", workspace_llms_path(@workspace) %>
-      </li>
-      <li class="list-group-item">
-        <%= link_to "Agents (#{@workspace.agents.count})", workspace_agents_path(@workspace) %>
-      </li>
-    </ul>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900"><%= @workspace.name %></h1>
+      <div class="flex items-center space-x-2">
+        <% if access[:owner] %>
+          <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Owner</span>
+          <%= link_to edit_workspace_path(@workspace), class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" do %>
+            Editar
+          <% end %>
+        <% else %>
+          <span class="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">Shared</span>
+        <% end %>
+      </div>
+    </div>
   </div>
-  <div class="col-md-9">
-    <h3>Workspace Details</h3>
-    <p><strong>Name:</strong> <%= @workspace.name %></p>
-  </div>
-</div>
+  
+  <div class="p-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <% if access[:access_llm] %>
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+          <%= link_to workspace_llms_path(@workspace), class: "block" do %>
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">LLMs</h3>
+                <p class="text-sm text-gray-600"><%= @workspace.llms.count %> configurados</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 opacity-50">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-500">LLMs</h3>
+              <p class="text-sm text-gray-400">Acesso restrito</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
 
-<div class="mt-3">
-  <%= link_to 'Edit', edit_workspace_path(@workspace), class: 'btn btn-warning' %>
-  <%= link_to 'Back', workspaces_path, class: 'btn btn-secondary' %>
+      <% if access[:access_agents] %>
+        <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+          <%= link_to workspace_agents_path(@workspace), class: "block" do %>
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Agentes</h3>
+                <p class="text-sm text-gray-600"><%= @workspace.agents.count %> configurados</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 opacity-50">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-500">Agentes</h3>
+              <p class="text-sm text-gray-400">Acesso restrito</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if access[:access_functions] %>
+        <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+          <%= link_to workspace_functions_path(@workspace), class: "block" do %>
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Funções</h3>
+                <p class="text-sm text-gray-600"><%= @workspace.functions.count %> configuradas</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 opacity-50">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-gray-400 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-gray-500">Funções</h3>
+              <p class="text-sm text-gray-400">Acesso restrito</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

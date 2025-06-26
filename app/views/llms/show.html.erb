@@ -1,31 +1,78 @@
-<h1><%= @llm.name %></h1>
-
-<div class="row">
-  <div class="col-md-12">
-    <h3>LLM Details</h3>
-    <p><strong>Name:</strong> <%= @llm.name %></p>
-    <p><strong>Provider:</strong> <%= @llm.provider %></p>
-    <p><strong>Model:</strong> <%= @llm.model %></p>
-    <p><strong>Workspace:</strong> <%= @workspace.name %></p>
-    
-    <h4>Configurations:</h4>
-    <pre><code><%= JSON.pretty_generate(@llm.configs) if @llm.configs %></code></pre>
-    
-    <h4>Agents using this LLM:</h4>
-    <% if @llm.agents.any? %>
-      <ul>
-        <% @llm.agents.each do |agent| %>
-          <li><%= link_to agent.name, [@workspace, agent] %></li>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900"><%= @llm.name %></h1>
+      <div class="flex space-x-2">
+        <%= link_to edit_workspace_llm_path(@workspace, @llm), class: "bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors" do %>
+          Editar
         <% end %>
-      </ul>
-    <% else %>
-      <p>No agents are using this LLM yet.</p>
-    <% end %>
+      </div>
+    </div>
   </div>
-</div>
-
-<div class="mt-3">
-  <%= link_to 'Edit', edit_workspace_llm_path(@workspace, @llm), class: 'btn btn-warning' %>
-  <%= link_to 'Back to LLMs', workspace_llms_path(@workspace), class: 'btn btn-secondary' %>
-  <%= link_to 'Back to Workspace', @workspace, class: 'btn btn-info' %>
+  
+  <div class="p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Informações Básicas</h3>
+        <dl class="space-y-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Nome</dt>
+            <dd class="text-sm text-gray-900"><%= @llm.name %></dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Provider</dt>
+            <dd class="text-sm text-gray-900">
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                <%= @llm.provider %>
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Model</dt>
+            <dd class="text-sm text-gray-900"><%= @llm.model %></dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Workspace</dt>
+            <dd class="text-sm text-gray-900"><%= @workspace.name %></dd>
+          </div>
+        </dl>
+      </div>
+      
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Agentes Utilizando</h3>
+        <% if @llm.agents.any? %>
+          <div class="space-y-2">
+            <% @llm.agents.each do |agent| %>
+              <div class="flex items-center justify-between p-2 bg-white rounded border">
+                <span class="text-sm text-gray-900"><%= agent.name %></span>
+                <%= link_to [@workspace, agent], class: "text-blue-600 hover:text-blue-800 text-sm" do %>
+                  Ver →
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">Nenhum agente está usando este LLM ainda.</p>
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Configurações</h3>
+      <% if @llm.configs.present? %>
+        <pre class="bg-gray-800 text-green-400 p-4 rounded-lg text-sm overflow-x-auto"><code><%= JSON.pretty_generate(@llm.configs) %></code></pre>
+      <% else %>
+        <p class="text-sm text-gray-500">Nenhuma configuração definida.</p>
+      <% end %>
+    </div>
+    
+    <div class="flex space-x-3 mt-6 pt-6 border-t">
+      <%= link_to workspace_llms_path(@workspace), class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors" do %>
+        ← Voltar para LLMs
+      <% end %>
+      <%= link_to @workspace, class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors" do %>
+        Voltar ao Workspace
+      <% end %>
+    </div>
+  </div>
 </div>

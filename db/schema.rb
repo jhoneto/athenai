@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_000709) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,6 +55,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_000709) do
     t.index ["workspace_id"], name: "index_llms_on_workspace_id"
   end
 
+  create_table "user_workspaces", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "workspace_id", null: false
+    t.boolean "access_llm"
+    t.boolean "access_agents"
+    t.boolean "access_functions"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_workspaces_on_user_id"
+    t.index ["workspace_id"], name: "index_user_workspaces_on_workspace_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -72,6 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_000709) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_workspaces_on_user_id"
   end
 
   add_foreign_key "agent_functions", "agents"
@@ -80,4 +94,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_000709) do
   add_foreign_key "agents", "workspaces"
   add_foreign_key "functions", "workspaces"
   add_foreign_key "llms", "workspaces"
+  add_foreign_key "user_workspaces", "users"
+  add_foreign_key "user_workspaces", "workspaces"
+  add_foreign_key "workspaces", "users"
 end

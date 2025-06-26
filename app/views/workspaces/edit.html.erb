@@ -1,8 +1,12 @@
-<h1>Edit Workspace</h1>
-
-<%= render 'form', 
-    model: @workspace,
-    submit_text: 'Update Workspace',
-    back_path: workspaces_path %>
-
-<%= link_to 'Show', @workspace, class: 'btn btn-info' %>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-900">Editar Workspace</h1>
+  </div>
+  
+  <div class="p-6">
+    <%= render 'form', 
+        model: @workspace,
+        submit_text: 'Atualizar Workspace',
+        back_path: workspace_path(@workspace) %>
+  </div>
+</div>
