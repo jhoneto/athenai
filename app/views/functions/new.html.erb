@@ -1,6 +1,12 @@
-<h1>New Function - <%= @workspace.name %></h1>
-
-<%= render 'form', 
-    model: [@workspace, @function],
-    submit_text: 'Create Function',
-    back_path: workspace_functions_path(@workspace) %>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-900">Nova Função - <%= @workspace.name %></h1>
+  </div>
+  
+  <div class="p-6">
+    <%= render 'form', 
+        model: [@workspace, @function],
+        submit_text: 'Criar Função',
+        back_path: workspace_functions_path(@workspace) %>
+  </div>
+</div>

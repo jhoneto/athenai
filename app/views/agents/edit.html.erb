@@ -1,10 +1,14 @@
-<h1>Edit Agent - <%= @workspace.name %></h1>
-
-<%= render 'form', 
-    model: [@workspace, @agent],
-    submit_text: 'Update Agent',
-    back_path: workspace_agents_path(@workspace),
-    llms: @llms,
-    selected_llm_id: @agent.llm_id %>
-
-<%= link_to 'Show', [@workspace, @agent], class: 'btn btn-info' %>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-900">Editar Agente - <%= @workspace.name %></h1>
+  </div>
+  
+  <div class="p-6">
+    <%= render 'form', 
+        model: [@workspace, @agent],
+        submit_text: 'Atualizar Agente',
+        back_path: workspace_agent_path(@workspace, @agent),
+        llms: @llms,
+        selected_llm_id: @agent.llm_id %>
+  </div>
+</div>

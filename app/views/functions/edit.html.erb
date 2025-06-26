@@ -1,8 +1,12 @@
-<h1>Edit Function - <%= @workspace.name %></h1>
-
-<%= render 'form', 
-    model: [@workspace, @function],
-    submit_text: 'Update Function',
-    back_path: workspace_functions_path(@workspace) %>
-
-<%= link_to 'Show', [@workspace, @function], class: 'btn btn-info' %>
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-900">Editar Função - <%= @workspace.name %></h1>
+  </div>
+  
+  <div class="p-6">
+    <%= render 'form', 
+        model: [@workspace, @function],
+        submit_text: 'Atualizar Função',
+        back_path: workspace_function_path(@workspace, @function) %>
+  </div>
+</div>
