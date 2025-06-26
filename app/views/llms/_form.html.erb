@@ -17,12 +17,10 @@
 
   <div class="form-group">
     <%= form.label :provider %>
-    <%= form.select :provider, options_for_select([
-      ['GPT', 'gpt'],
-      ['Claude', 'claude'],
-      ['Gemini', 'gemini'],
-      ['Other', 'other']
-    ], selected_provider), { prompt: 'Select provider' }, { class: 'form-control' } %>
+    <%= form.select :provider, options_for_select(
+      Llm::PROVIDERS.map { |provider| [provider, provider] }, 
+      selected_provider
+    ), { prompt: 'Select provider' }, { class: 'form-control' } %>
   </div>
 
   <div class="form-group">
@@ -30,12 +28,8 @@
     <%= form.text_field :model, class: 'form-control', placeholder: 'e.g., gpt-4, claude-3-sonnet' %>
   </div>
 
-  <div class="form-group">
-    <%= form.label :configs, 'Configurations (JSON)' %>
-    <%= form.text_area :configs, rows: 5, class: 'form-control', 
-                       value: configs_value, 
-                       placeholder: '{"api_key": "...", "temperature": 0.7}' %>
-  </div>
+  <h4>API Configuration</h4>
+  <%= render 'config_fields', form: form %>
 
   <div class="actions">
     <%= form.submit submit_text, class: 'btn btn-success' %>

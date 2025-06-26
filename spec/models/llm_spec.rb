@@ -32,6 +32,75 @@ RSpec.describe Llm, type: :model do
       expect(llm).not_to be_valid
       expect(llm.errors[:workspace]).to include("must exist")
     end
+
+    it 'is invalid with an invalid provider' do
+      llm = build(:llm, provider: 'InvalidProvider', workspace: workspace)
+      expect(llm).not_to be_valid
+      expect(llm.errors[:provider]).to include("is not included in the list")
+    end
+
+    it 'is valid with a valid provider from PROVIDERS constant' do
+      Llm::PROVIDERS.each do |provider|
+        llm = build(:llm, provider: provider, workspace: workspace)
+        expect(llm).to be_valid
+      end
+    end
+
+    describe 'config validations' do
+      let(:llm) { build(:llm, workspace: workspace) }
+
+      it 'validates temperature range' do
+        llm.temperature = -0.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:temperature]).to include("must be greater than or equal to 0.0")
+
+        llm.temperature = 2.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:temperature]).to include("must be less than or equal to 2.0")
+
+        llm.temperature = 1.0
+        expect(llm).to be_valid
+      end
+
+      it 'validates max_tokens is positive' do
+        llm.max_tokens = 0
+        expect(llm).not_to be_valid
+        expect(llm.errors[:max_tokens]).to include("must be greater than 0")
+
+        llm.max_tokens = 1000
+        expect(llm).to be_valid
+      end
+
+      it 'validates top_p range' do
+        llm.top_p = -0.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:top_p]).to include("must be greater than or equal to 0.0")
+
+        llm.top_p = 1.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:top_p]).to include("must be less than or equal to 1.0")
+
+        llm.top_p = 0.9
+        expect(llm).to be_valid
+      end
+
+      it 'validates penalty ranges' do
+        llm.frequency_penalty = -2.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:frequency_penalty]).to include("must be greater than or equal to -2.0")
+
+        llm.presence_penalty = 2.1
+        expect(llm).not_to be_valid
+        expect(llm.errors[:presence_penalty]).to include("must be less than or equal to 2.0")
+      end
+
+      it 'allows blank config values' do
+        llm.temperature = nil
+        llm.max_tokens = nil
+        llm.top_p = nil
+        expect(llm).to be_valid
+      end
+    end
   end
 
   describe 'associations' do
@@ -57,27 +126,29 @@ RSpec.describe Llm, type: :model do
     end
   end
 
-  describe 'configs serialization' do
+  describe 'store_accessor attributes' do
     let(:workspace) { create(:workspace) }
-    let(:configs) { { temperature: 0.8, max_tokens: 1500, top_p: 0.9 } }
 
-    it 'serializes and deserializes configs as JSON' do
-      llm = create(:llm, workspace: workspace, configs: configs)
+    it 'allows setting and getting store_accessor attributes' do
+      llm = create(:llm, workspace: workspace, 
+                   temperature: 0.8, 
+                   max_tokens: 1500, 
+                   top_p: 0.9,
+                   api_key: 'sk-test123')
       llm.reload
 
-      expect(llm.configs).to eq(configs.stringify_keys)
+      expect(llm.temperature).to eq(0.8)
+      expect(llm.max_tokens).to eq(1500)
+      expect(llm.top_p).to eq(0.9)
+      expect(llm.api_key).to eq('sk-test123')
     end
 
-    it 'handles nil configs' do
-      llm = create(:llm, workspace: workspace, configs: nil)
-      expect(llm.configs).to be_nil
-    end
-
-    it 'handles empty configs' do
-      llm = create(:llm, workspace: workspace, configs: {})
-      llm.reload
-
-      expect(llm.configs).to eq({})
+    it 'persists store_accessor attributes in configs column' do
+      llm = create(:llm, workspace: workspace)
+      llm.update(temperature: 1.2, api_url: 'https://api.example.com')
+      
+      expect(llm.configs['temperature']).to eq(1.2)
+      expect(llm.configs['api_url']).to eq('https://api.example.com')
     end
   end
 end

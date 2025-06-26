@@ -4,7 +4,6 @@
     model: [@workspace, @llm],
     submit_text: 'Update LLM',
     back_path: workspace_llms_path(@workspace),
-    selected_provider: @llm.provider,
-    configs_value: @llm.configs.present? ? JSON.pretty_generate(@llm.configs) : '' %>
+    selected_provider: @llm.provider %>
 
 <%= link_to 'Show', [@workspace, @llm], class: 'btn btn-info' %>

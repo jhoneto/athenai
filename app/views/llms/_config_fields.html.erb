@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <%= form.label :api_key, 'API Key' %>
+      <%= form.password_field :api_key, class: 'form-control', 
+                              placeholder: 'Your API key for the LLM provider' %>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-group">
+      <%= form.label :api_url, 'API URL (Optional)' %>
+      <%= form.url_field :api_url, class: 'form-control', 
+                         placeholder: 'Custom API endpoint URL' %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :temperature, 'Temperature (0.0-2.0)' %>
+      <%= form.number_field :temperature, class: 'form-control', 
+                            step: 0.1, min: 0.0, max: 2.0,
+                            placeholder: '0.7' %>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :max_tokens, 'Max Tokens' %>
+      <%= form.number_field :max_tokens, class: 'form-control', 
+                            min: 1, placeholder: '2000' %>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :timeout, 'Timeout (seconds)' %>
+      <%= form.number_field :timeout, class: 'form-control', 
+                            min: 1, placeholder: '30' %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :top_p, 'Top P (0.0-1.0)' %>
+      <%= form.number_field :top_p, class: 'form-control', 
+                            step: 0.01, min: 0.0, max: 1.0,
+                            placeholder: '0.9' %>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :top_k, 'Top K' %>
+      <%= form.number_field :top_k, class: 'form-control', 
+                            min: 1, placeholder: '40' %>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <%= form.label :stop_sequences, 'Stop Sequences' %>
+      <%= form.text_field :stop_sequences, class: 'form-control', 
+                          placeholder: 'Comma-separated values' %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <%= form.label :frequency_penalty, 'Frequency Penalty (-2.0 to 2.0)' %>
+      <%= form.number_field :frequency_penalty, class: 'form-control', 
+                            step: 0.1, min: -2.0, max: 2.0,
+                            placeholder: '0.0' %>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-group">
+      <%= form.label :presence_penalty, 'Presence Penalty (-2.0 to 2.0)' %>
+      <%= form.number_field :presence_penalty, class: 'form-control', 
+                            step: 0.1, min: -2.0, max: 2.0,
+                            placeholder: '0.0' %>
+    </div>
+  </div>
+</div>

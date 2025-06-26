@@ -50,6 +50,9 @@ class LlmsController < ApplicationController
   end
 
   def llm_params
-    params.require(:llm).permit(:name, :provider, :model, :configs)
+    params.require(:llm).permit(:name, :provider, :model, :api_key, :api_url, 
+                                :temperature, :max_tokens, :top_p, :top_k, 
+                                :frequency_penalty, :presence_penalty, 
+                                :stop_sequences, :timeout)
   end
 end
