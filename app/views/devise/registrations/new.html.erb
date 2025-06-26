@@ -1,5 +1,3 @@
-<h2>Sign up</h2>
-
 <%= render "form", 
     resource: resource, 
     resource_name: resource_name,
@@ -8,6 +6,8 @@
     show_password_hint: true,
     show_current_password: false,
     password_autocomplete: "new-password",
-    submit_text: "Sign up" %>
+    submit_text: "Criar conta" %>
 
-<%= render "devise/shared/links" %>
+<div class="mt-6">
+  <%= render "devise/shared/links" %>
+</div>

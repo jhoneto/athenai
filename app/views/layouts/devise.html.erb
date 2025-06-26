@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Athenai" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50">
+    <div class="min-h-screen flex">
+      <!-- Left Column - Image (hidden on mobile) -->
+      <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 relative">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative z-10 flex items-center justify-center w-full">
+          <div class="text-center text-white">
+            <h1 class="text-4xl font-bold mb-4">Bem-vindo ao Athenai</h1>
+            <p class="text-xl opacity-90">Plataforma de gerenciamento de agentes IA</p>
+          </div>
+        </div>
+        <!-- Placeholder for future image -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-10">
+          <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1v-2z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Right Column - Form -->
+      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div class="max-w-md w-full space-y-8">
+          <!-- Flash messages -->
+          <% if notice %>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md">
+              <%= notice %>
+            </div>
+          <% end %>
+          <% if alert %>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md">
+              <%= alert %>
+            </div>
+          <% end %>
+          
+          <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Athenai</h2>
+            <p class="text-gray-600">
+              <% if controller_name == 'sessions' %>
+                Entre na sua conta
+              <% elsif controller_name == 'registrations' %>
+                Crie sua conta
+              <% elsif controller_name == 'passwords' %>
+                Recuperar senha
+              <% else %>
+                Bem-vindo
+              <% end %>
+            </p>
+          </div>
+          
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
