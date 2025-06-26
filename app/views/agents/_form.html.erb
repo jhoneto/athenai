@@ -1,0 +1,33 @@
+<%= form_with model: model, local: true do |form| %>
+  <% if model.last.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(model.last.errors.count, "error") %> prohibited this agent from being saved:</h4>
+      <ul>
+        <% model.last.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :llm_id, 'LLM' %>
+    <%= form.select :llm_id, options_from_collection_for_select(llms, :id, :name, selected_llm_id), 
+                    { prompt: 'Select an LLM' }, { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :prompt %>
+    <%= form.text_area :prompt, rows: 5, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit submit_text, class: 'btn btn-success' %>
+    <%= link_to 'Back', back_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>

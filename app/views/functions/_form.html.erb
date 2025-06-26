@@ -1,0 +1,27 @@
+<%= form_with model: model, local: true do |form| %>
+  <% if model.last.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(model.last.errors.count, "error") %> prohibited this function from being saved:</h4>
+      <ul>
+        <% model.last.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :code %>
+    <%= form.text_area :code, rows: 10, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit submit_text, class: 'btn btn-success' %>
+    <%= link_to 'Back', back_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>

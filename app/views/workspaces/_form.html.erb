@@ -1,0 +1,22 @@
+<%= form_with model: model, local: true do |form| %>
+  <% if model.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(model.errors.count, "error") %> prohibited this workspace from being saved:</h4>
+      <ul>
+        <% model.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit submit_text, class: 'btn btn-success' %>
+    <%= link_to 'Back', back_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>

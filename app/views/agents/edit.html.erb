@@ -1,36 +1,10 @@
 <h1>Edit Agent - <%= @workspace.name %></h1>
 
-<%= form_with model: [@workspace, @agent], local: true do |form| %>
-  <% if @agent.errors.any? %>
-    <div class="alert alert-danger">
-      <h4><%= pluralize(@agent.errors.count, "error") %> prohibited this agent from being saved:</h4>
-      <ul>
-        <% @agent.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= render 'form', 
+    model: [@workspace, @agent],
+    submit_text: 'Update Agent',
+    back_path: workspace_agents_path(@workspace),
+    llms: @llms,
+    selected_llm_id: @agent.llm_id %>
 
-  <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :llm_id, 'LLM' %>
-    <%= form.select :llm_id, options_from_collection_for_select(@llms, :id, :name, @agent.llm_id), 
-                    { prompt: 'Select an LLM' }, { class: 'form-control' } %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :prompt %>
-    <%= form.text_area :prompt, rows: 5, class: 'form-control' %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit 'Update Agent', class: 'btn btn-success' %>
-    <%= link_to 'Show', [@workspace, @agent], class: 'btn btn-info' %>
-    <%= link_to 'Back', workspace_agents_path(@workspace), class: 'btn btn-secondary' %>
-  </div>
-<% end %>
+<%= link_to 'Show', [@workspace, @agent], class: 'btn btn-info' %>
