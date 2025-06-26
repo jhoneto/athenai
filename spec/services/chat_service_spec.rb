@@ -62,7 +62,7 @@ RSpec.describe ChatService, type: :service do
       it 'uses existing chat when chat_id is provided' do
         existing_chat = create(:chat, agent: agent)
         payload_with_chat_id = valid_text_payload.merge(chat_id: existing_chat.id)
-        
+
         result = described_class.call(agent: agent, payload: payload_with_chat_id)
 
         expect(result).to be_success
@@ -154,9 +154,8 @@ RSpec.describe ChatService, type: :service do
           audio: { format: "mp3", data: "audio_data" }
         }
 
-        expect {
-          described_class.call(agent: agent, payload: audio_payload)
-        }.to raise_error(NotImplementedError, "Audio processing not implemented")
+        response = described_class.call(agent: agent, payload: audio_payload)
+        expect(response.error).to eq("Audio processing not implemented")
       end
     end
 
