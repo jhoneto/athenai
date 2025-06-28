@@ -33,6 +33,4 @@ class BaseController < ApplicationController
   end
 
   helper_method :user_workspaces, :shared_workspaces, :all_user_workspaces, :workspace_access
-
-
 end
