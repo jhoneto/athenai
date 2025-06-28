@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_28_001400) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,6 +79,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_001400) do
     t.bigint "workspace_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
+    t.jsonb "parameters", default: {}
+    t.string "return_type"
+    t.boolean "enabled", default: true
+    t.string "tool_type", default: "custom"
+    t.index ["enabled"], name: "index_functions_on_enabled"
+    t.index ["parameters"], name: "index_functions_on_parameters", using: :gin
+    t.index ["tool_type"], name: "index_functions_on_tool_type"
     t.index ["workspace_id"], name: "index_functions_on_workspace_id"
   end
 

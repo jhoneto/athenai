@@ -10,6 +10,11 @@ class ChatService < BaseService
     chat_record = find_or_create_chat
     chat_record.with_instructions(@agent.prompt) if @agent.prompt.present?
 
+    tools = load_agent_tools
+    if tools.present?
+      chat_record.with_tools(*tools)
+    end
+
     return failure("Chat not found") unless chat_record
 
     process_message(chat_record)
@@ -19,6 +24,7 @@ class ChatService < BaseService
       response: @message_data
     )
   rescue StandardError => e
+    Rails.logger.error("ChatService error: #{e.backtrace.join("\n")}")
     failure(e.message)
   end
 
@@ -61,6 +67,7 @@ class ChatService < BaseService
   end
 
   def process_text_message(chat)
+    byebug
     chat.ask(@payload[:message][:text][:body])
     chat.messages.last.content
   end
@@ -73,5 +80,32 @@ class ChatService < BaseService
   def process_audio_message(chat)
     # TODO: Implement audio processing logic
     raise NotImplementedError, "Audio processing not implemented"
+  end
+
+  def load_agent_tools
+    tools = []
+    workspace_folder = File.join(Rails.root, "app", "tool", @agent.workspace.name.parameterize)
+    
+    return tools unless Dir.exist?(workspace_folder)
+
+    @agent.functions.enabled.each do |function|
+      tool_file = File.join(workspace_folder, "#{function.name.underscore}.rb")
+      
+      if File.exist?(tool_file)
+        begin
+          # Load the tool file
+          require tool_file
+          
+          # Get the class name and instantiate
+          class_name = function.name.camelize
+          tool_class = Object.const_get(class_name)
+          tools << tool_class.new
+        rescue => e
+          Rails.logger.error("Failed to load tool #{function.name}: #{e.message}")
+        end
+      end
+    end
+
+    tools
   end
 end
