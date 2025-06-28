@@ -154,8 +154,9 @@ RSpec.describe ChatService, type: :service do
           audio: { format: "mp3", data: "audio_data" }
         }
 
-        response = described_class.call(agent: agent, payload: audio_payload)
-        expect(response.error).to eq("Audio processing not implemented")
+        expect {
+          described_class.call(agent: agent, payload: audio_payload)
+        }.to raise_error(NotImplementedError, "Audio processing not implemented")
       end
     end
 

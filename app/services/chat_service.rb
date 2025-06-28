@@ -7,14 +7,13 @@ class ChatService < BaseService
   def call
     validate_payload!
 
-    chat = find_or_create_chat
-    return failure("Chat not found") unless chat
+    chat_record = find_or_create_chat
+    return failure("Chat not found") unless chat_record
 
-    chat.with_instructions(@agent.prompt)
-    process_message(chat)
+    process_message(chat_record)
 
     success(
-      chat_id: chat.id,
+      chat_id: chat_record.id,
       response: @message_data
     )
   rescue StandardError => e
