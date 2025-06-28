@@ -25,4 +25,10 @@ Rails.application.routes.draw do
       resources :agent_functions, only: [ :index, :create, :destroy ]
     end
   end
+
+  namespace :api do
+    scope ":workspace_api_key" do
+      resources :messages, only: [ :create ]
+    end
+  end
 end

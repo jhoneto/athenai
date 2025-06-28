@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_202708) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_001400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,7 +59,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_202708) do
     t.bigint "llm_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["llm_id"], name: "index_agents_on_llm_id"
+    t.index ["uuid"], name: "index_agents_on_uuid", unique: true
     t.index ["workspace_id"], name: "index_agents_on_workspace_id"
   end
 

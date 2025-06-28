@@ -8,6 +8,8 @@ class ChatService < BaseService
     validate_payload!
 
     chat_record = find_or_create_chat
+    chat_record.with_instructions(@agent.prompt) if @agent.prompt.present?
+
     return failure("Chat not found") unless chat_record
 
     process_message(chat_record)
