@@ -85,17 +85,17 @@ class ChatService < BaseService
   def load_agent_tools
     tools = []
     workspace_folder = File.join(Rails.root, "app", "tool", @agent.workspace.name.parameterize)
-    
+
     return tools unless Dir.exist?(workspace_folder)
 
     @agent.functions.enabled.each do |function|
       tool_file = File.join(workspace_folder, "#{function.name.underscore}.rb")
-      
+
       if File.exist?(tool_file)
         begin
           # Load the tool file
           require tool_file
-          
+
           # Get the class name and instantiate
           class_name = function.name.camelize
           tool_class = Object.const_get(class_name)
