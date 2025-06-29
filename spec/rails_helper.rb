@@ -43,16 +43,16 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   # DatabaseCleaner configuration
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
+  # config.before(:suite) do
+  #   DatabaseCleaner.strategy = :transaction
+  #   DatabaseCleaner.clean_with(:truncation)
+  # end
 
-  config.around do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
-  end
+  # config.around do |example|
+  #   DatabaseCleaner.cleaning do
+  #     example.run
+  #   end
+  # end
 
   # FactoryBot configuration
   config.include FactoryBot::Syntax::Methods
