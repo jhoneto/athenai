@@ -58,13 +58,14 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: athenai_test
         ports:
           - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=3
 
       # redis:
       #   image: redis
@@ -85,10 +86,51 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Create template file for functions
+        run: |
+          mkdir -p app/tool
+          cat > app/tool/template.txt << 'EOF'
+          class {{ ClassName }} < ApplicationService
+            {{ description }}
+
+          {{params}}
+
+            def call
+              {{inputs}}
+              {{code}}
+            end
+          end
+          EOF
+
+      - name: Setup database
+        env:
+          RAILS_ENV: test
+          CI: true
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/athenai_test
+          # REDIS_URL: redis://localhost:6379/0
+        run: |
+          echo "Creating and migrating databases..."
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+          echo "Running cable migrations (if they exist)..."
+          bundle exec rails db:migrate:cable || echo "No cable migrations found"
+          echo "Running queue migrations (if they exist)..."
+          bundle exec rails db:migrate:queue || echo "No queue migrations found"
+          echo "Database setup complete"
+
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+          CI: true
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/athenai_test
           # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
 
