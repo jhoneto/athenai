@@ -96,7 +96,6 @@ RSpec.describe Function, type: :model do
       expect { function.destroy }.to change(AgentFunction, :count).by(-1)
       expect(AgentFunction.find_by(id: agent_function.id)).to be_nil
     end
-
   end
 
   describe 'scopes' do
@@ -106,8 +105,8 @@ RSpec.describe Function, type: :model do
 
     describe '.enabled' do
       it 'returns only enabled functions' do
-        expect(Function.enabled).to include(enabled_function)
-        expect(Function.enabled).not_to include(disabled_function)
+        expect(described_class.enabled).to include(enabled_function)
+        expect(described_class.enabled).not_to include(disabled_function)
       end
     end
 
@@ -117,8 +116,8 @@ RSpec.describe Function, type: :model do
         agent = create(:agent, workspace: workspace, llm: llm)
         create(:agent_function, agent: agent, function: enabled_function)
 
-        expect(Function.for_agent(agent)).to include(enabled_function)
-        expect(Function.for_agent(agent)).not_to include(disabled_function)
+        expect(described_class.for_agent(agent)).to include(enabled_function)
+        expect(described_class.for_agent(agent)).not_to include(disabled_function)
       end
     end
   end
@@ -126,9 +125,35 @@ RSpec.describe Function, type: :model do
   describe 'callbacks' do
     let(:workspace) { create(:workspace) }
 
-    it 'generates tool file after save' do
-      expect_any_instance_of(Function).to receive(:generate_tool_file)
-      create(:function, workspace: workspace)
+    it 'calls generate_tool_file after save' do
+      function = build(:function, workspace: workspace)
+      allow(function).to receive(:generate_tool_file)
+      function.save!
+      expect(function).to have_received(:generate_tool_file)
+    end
+
+    it 'generate_tool_file returns early in test environment' do
+      function = build(:function, workspace: workspace)
+      expect(function.generate_tool_file).to be_nil
+    end
+
+    it 'generate_tool_file creates file in non-test environment' do
+      function = build(:function, workspace: workspace)
+
+      # Mock Rails.env to not be test
+      allow(Rails.env).to receive(:test?).and_return(false)
+
+      # Setup spies for file operations
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:read).and_return('template content')
+      allow(File).to receive(:write)
+
+      # Should call file operations
+      function.generate_tool_file
+
+      expect(FileUtils).to have_received(:mkdir_p)
+      expect(File).to have_received(:read)
+      expect(File).to have_received(:write)
     end
   end
 
@@ -146,7 +171,7 @@ RSpec.describe Function, type: :model do
         "name" => { "type" => "string", "required" => true, "description" => "User name" },
         "age" => { "type" => "integer", "required" => false, "description" => "User age" }
       }
-      
+
       result = function.generate_params_string
       expect(result).to include('parameter :name, type: :string, required: true, description: "User name"')
       expect(result).to include('parameter :age, type: :integer, description: "User age"')
