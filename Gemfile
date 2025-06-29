@@ -44,6 +44,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
+  gem "byebug"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
@@ -74,6 +75,10 @@ group :test do
 
   # Database cleaner for test isolation
   gem "database_cleaner-active_record", "~> 2.1"
+
+  # HTTP request stubbing for testing
+  gem "webmock", "~> 3.18"
 end
 
+gem "ruby_llm", "~> 1.3", ">= 1.3.1"
 gem "tailwindcss-rails", "~> 4.2"

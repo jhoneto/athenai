@@ -1,0 +1,12 @@
+class {{ ClassName }} < RubyLLM::Tool
+  description "{{ description }}"
+
+  {{params}}
+
+  def execute({{inputs}})
+    {{code}}
+
+  rescue => e
+    { error: e.message }
+  end
+end

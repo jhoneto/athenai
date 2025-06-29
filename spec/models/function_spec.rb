@@ -4,7 +4,7 @@ RSpec.describe Function, type: :model do
   describe 'validations' do
     let(:workspace) { create(:workspace) }
 
-    it 'is valid with name, code and workspace' do
+    it 'is valid with all required fields' do
       function = build(:function, workspace: workspace)
       expect(function).to be_valid
     end
@@ -19,6 +19,39 @@ RSpec.describe Function, type: :model do
       function = build(:function, code: nil, workspace: workspace)
       expect(function).not_to be_valid
       expect(function.errors[:code]).to include("can't be blank")
+    end
+
+    it 'is invalid without description' do
+      function = build(:function, description: nil, workspace: workspace)
+      expect(function).not_to be_valid
+      expect(function.errors[:description]).to include("can't be blank")
+    end
+
+    it 'is invalid without parameters' do
+      function = build(:function, parameters: nil, workspace: workspace)
+      expect(function).not_to be_valid
+      expect(function.errors[:parameters]).to include("can't be blank")
+    end
+
+    it 'is invalid with invalid tool_type' do
+      function = build(:function, tool_type: 'invalid', workspace: workspace)
+      expect(function).not_to be_valid
+      expect(function.errors[:tool_type]).to include("is not included in the list")
+    end
+
+    it 'is valid with custom tool_type' do
+      function = build(:function, tool_type: 'custom', workspace: workspace)
+      expect(function).to be_valid
+    end
+
+    it 'is valid with system tool_type' do
+      function = build(:function, tool_type: 'system', workspace: workspace)
+      expect(function).to be_valid
+    end
+
+    it 'is valid with built_in tool_type' do
+      function = build(:function, tool_type: 'built_in', workspace: workspace)
+      expect(function).to be_valid
     end
 
     it 'is invalid without a workspace' do
@@ -62,6 +95,101 @@ RSpec.describe Function, type: :model do
 
       expect { function.destroy }.to change(AgentFunction, :count).by(-1)
       expect(AgentFunction.find_by(id: agent_function.id)).to be_nil
+    end
+  end
+
+  describe 'scopes' do
+    let(:workspace) { create(:workspace) }
+    let!(:enabled_function) { create(:function, workspace: workspace, enabled: true) }
+    let!(:disabled_function) { create(:function, workspace: workspace, enabled: false) }
+
+    describe '.enabled' do
+      it 'returns only enabled functions' do
+        expect(described_class.enabled).to include(enabled_function)
+        expect(described_class.enabled).not_to include(disabled_function)
+      end
+    end
+
+    describe '.for_agent' do
+      it 'returns functions associated with the agent' do
+        llm = create(:llm, workspace: workspace)
+        agent = create(:agent, workspace: workspace, llm: llm)
+        create(:agent_function, agent: agent, function: enabled_function)
+
+        expect(described_class.for_agent(agent)).to include(enabled_function)
+        expect(described_class.for_agent(agent)).not_to include(disabled_function)
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    let(:workspace) { create(:workspace) }
+
+    it 'calls generate_tool_file after save' do
+      function = build(:function, workspace: workspace)
+      allow(function).to receive(:generate_tool_file)
+      function.save!
+      expect(function).to have_received(:generate_tool_file)
+    end
+
+    it 'generate_tool_file returns early in test environment' do
+      function = build(:function, workspace: workspace)
+      expect(function.generate_tool_file).to be_nil
+    end
+
+    it 'generate_tool_file creates file in non-test environment' do
+      function = build(:function, workspace: workspace)
+
+      # Mock Rails.env to not be test
+      allow(Rails.env).to receive(:test?).and_return(false)
+
+      # Setup spies for file operations
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:read).and_return('template content')
+      allow(File).to receive(:write)
+
+      # Should call file operations
+      function.generate_tool_file
+
+      expect(FileUtils).to have_received(:mkdir_p)
+      expect(File).to have_received(:read)
+      expect(File).to have_received(:write)
+    end
+  end
+
+  describe '#generate_params_string' do
+    let(:workspace) { create(:workspace) }
+    let(:function) { build(:function, workspace: workspace) }
+
+    it 'returns empty string when parameters is blank' do
+      function.parameters = {}
+      expect(function.generate_params_string).to eq("")
+    end
+
+    it 'generates parameter string correctly' do
+      function.parameters = {
+        "name" => { "type" => "string", "required" => true, "description" => "User name" },
+        "age" => { "type" => "integer", "required" => false, "description" => "User age" }
+      }
+
+      result = function.generate_params_string
+      expect(result).to include('parameter :name, type: :string, required: true, description: "User name"')
+      expect(result).to include('parameter :age, type: :integer, description: "User age"')
+    end
+  end
+
+  describe '#generate_inputs_string' do
+    let(:workspace) { create(:workspace) }
+    let(:function) { build(:function, workspace: workspace) }
+
+    it 'returns empty string when parameters is blank' do
+      function.parameters = {}
+      expect(function.generate_inputs_string).to eq("")
+    end
+
+    it 'generates inputs string correctly' do
+      function.parameters = { "name" => {}, "age" => {} }
+      expect(function.generate_inputs_string).to eq("name, age")
     end
   end
 end

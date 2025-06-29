@@ -1,4 +1,4 @@
-class WorkspacesController < ApplicationController
+class WorkspacesController < BaseController
   before_action :set_workspace, only: [ :show, :edit, :update, :destroy ]
 
   def index

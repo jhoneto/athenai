@@ -1,4 +1,4 @@
-class AgentFunctionsController < ApplicationController
+class AgentFunctionsController < BaseController
   before_action :set_workspace
   before_action :set_agent
   before_action :set_agent_function, only: [ :destroy ]

@@ -1,4 +1,4 @@
-class AgentsController < ApplicationController
+class AgentsController < BaseController
   before_action :set_workspace
   before_action :set_agent, only: [ :show, :edit, :update, :destroy ]
 

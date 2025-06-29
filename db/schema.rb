@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "agent_functions", force: :cascade do |t|
     t.bigint "agent_id", null: false
@@ -31,8 +59,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
     t.bigint "llm_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["llm_id"], name: "index_agents_on_llm_id"
+    t.index ["uuid"], name: "index_agents_on_uuid", unique: true
     t.index ["workspace_id"], name: "index_agents_on_workspace_id"
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.string "model_id"
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_chats_on_agent_id"
   end
 
   create_table "functions", force: :cascade do |t|
@@ -41,6 +79,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
     t.bigint "workspace_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
+    t.jsonb "parameters", default: {}
+    t.string "return_type"
+    t.boolean "enabled", default: true
+    t.string "tool_type", default: "custom"
+    t.index ["enabled"], name: "index_functions_on_enabled"
+    t.index ["parameters"], name: "index_functions_on_parameters", using: :gin
+    t.index ["tool_type"], name: "index_functions_on_tool_type"
     t.index ["workspace_id"], name: "index_functions_on_workspace_id"
   end
 
@@ -53,6 +99,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["workspace_id"], name: "index_llms_on_workspace_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_id", null: false
+    t.string "role"
+    t.text "content"
+    t.string "model_id"
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "tool_call_id"
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["tool_call_id"], name: "index_messages_on_tool_call_id"
+  end
+
+  create_table "tool_calls", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.string "tool_call_id"
+    t.string "name"
+    t.jsonb "arguments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_tool_calls_on_message_id"
+    t.index ["tool_call_id"], name: "index_tool_calls_on_tool_call_id"
   end
 
   create_table "user_workspaces", force: :cascade do |t|
@@ -85,15 +156,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_003852) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "api_key"
+    t.string "api_secret"
+    t.index ["api_key"], name: "index_workspaces_on_api_key", unique: true
     t.index ["user_id"], name: "index_workspaces_on_user_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_functions", "agents"
   add_foreign_key "agent_functions", "functions"
   add_foreign_key "agents", "llms"
   add_foreign_key "agents", "workspaces"
+  add_foreign_key "chats", "agents"
   add_foreign_key "functions", "workspaces"
   add_foreign_key "llms", "workspaces"
+  add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "tool_calls"
+  add_foreign_key "tool_calls", "messages"
   add_foreign_key "user_workspaces", "users"
   add_foreign_key "user_workspaces", "workspaces"
   add_foreign_key "workspaces", "users"

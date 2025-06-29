@@ -55,47 +55,36 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
     services:
       postgres:
-        image: postgres
+        image: postgres:16-alpine
+        ports:
+          - "5432:5432"
         env:
+          POSTGRES_DB: connect_api_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      # redis:
-      #   image: redis
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
+    env:
+      RAILS_ENV: test
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DEVISE_SECRET_KEY: 2218439580cce4b35beb3376ee864399a825764d1fe7c9f92b5c269e184a07b62d68e9183def0b0c85de7aabca3ca8066e65cdb9223996f44ccb6edb73722fae
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable
-
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
+        uses: actions/checkout@v3
+      # Add or replace dependency steps here
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
+      # Bundle Install
+      - name: Install gems
+        run: bundle install
+      - name: Set up database
+        run: bin/rails db:create
+      # Add or replace database setup steps here
+      - name: Set up database schema
+        run: bin/rails db:schema:load
+      # Add or replace test runners here
       - name: Run tests
-        env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
-
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore

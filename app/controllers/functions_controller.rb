@@ -1,4 +1,4 @@
-class FunctionsController < ApplicationController
+class FunctionsController < BaseController
   before_action :set_workspace
   before_action :set_function, only: [ :show, :edit, :update, :destroy ]
 
