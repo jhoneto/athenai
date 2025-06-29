@@ -74,54 +74,18 @@ jobs:
       #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config google-chrome-stable
-
+      steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
+        uses: actions/checkout@v3
+      # Add or replace dependency steps here
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Setup database
-        env:
-          RAILS_ENV: test
-          CI: true
-          DATABASE_USERNAME: postgres
-          DATABASE_PASSWORD: postgres
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/athenai_test
-          # REDIS_URL: redis://localhost:6379/0
-        run: |
-          echo "Creating and migrating databases..."
-          bundle exec rails db:create
-          bundle exec rails db:migrate
-          echo "Running cable migrations (if they exist)..."
-          bundle exec rails db:migrate:cable || echo "No cable migrations found"
-          echo "Running queue migrations (if they exist)..."
-          bundle exec rails db:migrate:queue || echo "No queue migrations found"
-          echo "Database setup complete"
-
+      # Bundle Install
+      - name: Install gems
+        run: bundle install
+      # Add or replace database setup steps here
+      - name: Set up database schema
+        run: bin/rails db:schema:load
+      # Add or replace test runners here
       - name: Run tests
-        env:
-          RAILS_ENV: test
-          CI: true
-          DATABASE_USERNAME: postgres
-          DATABASE_PASSWORD: postgres
-          DATABASE_HOST: localhost
-          DATABASE_PORT: 5432
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/athenai_test
-          # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
-
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
