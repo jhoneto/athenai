@@ -10,7 +10,6 @@ class Function < ApplicationRecord
   belongs_to :workspace
   has_many :agent_functions, dependent: :destroy
   has_many :agents, through: :agent_functions
-  has_many :tool_executions, dependent: :destroy
 
   scope :enabled, -> { where(enabled: true) }
   scope :for_agent, ->(agent) { joins(:agents).where(agents: { id: agent.id }) }
@@ -19,6 +18,8 @@ class Function < ApplicationRecord
 
 
   def generate_tool_file
+    return if Rails.env.test?
+
     workspace_folder = File.join(Rails.root, "app", "tool", workspace.name.parameterize)
     FileUtils.mkdir_p(workspace_folder) unless Dir.exist?(workspace_folder)
 

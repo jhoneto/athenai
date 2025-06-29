@@ -67,7 +67,6 @@ class ChatService < BaseService
   end
 
   def process_text_message(chat)
-    byebug
     chat.ask(@payload[:message][:text][:body])
     chat.messages.last.content
   end
