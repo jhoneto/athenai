@@ -86,22 +86,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Create template file for functions
-        run: |
-          mkdir -p app/tool
-          cat > app/tool/template.txt << 'EOF'
-          class {{ ClassName }} < ApplicationService
-            {{ description }}
-
-          {{params}}
-
-            def call
-              {{inputs}}
-              {{code}}
-            end
-          end
-          EOF
-
       - name: Setup database
         env:
           RAILS_ENV: test
