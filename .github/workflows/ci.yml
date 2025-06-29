@@ -55,24 +55,22 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:16-alpine
         ports:
           - "5432:5432"
         env:
+          POSTGRES_DB: connect_api_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: athenai_test
-        options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      # redis:
-      #   image: redis
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
+    env:
+      RAILS_ENV: test
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DEVISE_SECRET_KEY: 2218439580cce4b35beb3376ee864399a825764d1fe7c9f92b5c269e184a07b62d68e9183def0b0c85de7aabca3ca8066e65cdb9223996f44ccb6edb73722fae
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
