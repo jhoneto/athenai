@@ -50,6 +50,6 @@ class FunctionsController < BaseController
   end
 
   def function_params
-    params.require(:function).permit(:name, :code)
+    params.require(:function).permit(:name, :code, :description, :tool_type, parameters: {})
   end
 end
