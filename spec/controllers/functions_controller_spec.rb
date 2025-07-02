@@ -6,7 +6,7 @@ RSpec.describe FunctionsController, type: :controller do
   let(:function) { create(:function, workspace: workspace) }
 
   before do
-    workspace.users << user
+    workspace.user_workspaces.create!(user: user, access_functions: true, access_llm: true, access_agents: true)
     sign_in user
   end
 
@@ -85,8 +85,16 @@ RSpec.describe FunctionsController, type: :controller do
         name: "Test Function",
         code: "def test_function\n  puts 'Hello World'\nend",
         description: "Test function description",
-        parameters: { "input" => { "type" => "string", "required" => true, "description" => "Input parameter" } },
-        tool_type: "custom"
+        parameters: {
+          "0" => {
+            "name" => "input",
+            "type" => "string",
+            "required" => "true",
+            "description" => "Input parameter"
+          }
+        },
+        tool_type: "custom",
+        enabled: true
       }
     }
 

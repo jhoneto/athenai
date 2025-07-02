@@ -1,0 +1,194 @@
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Executar Função: <%= @function.name %></h1>
+        <% if @function.description.present? %>
+          <p class="mt-1 text-sm text-gray-500"><%= @function.description %></p>
+        <% end %>
+      </div>
+      <div class="flex space-x-2">
+        <%= link_to [@workspace, @function], class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors" do %>
+          ← Voltar
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="p-6" data-controller="execution">
+    <%= form_with url: run_workspace_function_path(@workspace, @function), method: :post, local: false, 
+                  class: "space-y-6", data: { turbo_frame: "execution_result" } do |form| %>
+      
+      <% if @parameters.present? %>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Parâmetros da Função</h3>
+            
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+            <% @parameters.each do |param_name, config| %>
+              <div>
+                <label for="function_inputs_<%= param_name %>" class="block text-sm font-medium text-gray-700 mb-2">
+                  <%= param_name.humanize %>
+                  <% if config["required"] %>
+                    <span class="text-red-500">*</span>
+                  <% end %>
+                </label>
+                
+                <% if config["description"].present? %>
+                  <p class="text-xs text-gray-500 mb-2"><%= config["description"] %></p>
+                <% end %>
+                
+                <div>
+                  <% case config["type"] %>
+                  <% when "boolean" %>
+                    <select name="function_inputs[<%= param_name %>]" 
+                            id="function_inputs_<%= param_name %>"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            <%= "required" if config["required"] %>>
+                      <option value="">Selecione...</option>
+                      <option value="true">Verdadeiro</option>
+                      <option value="false">Falso</option>
+                    </select>
+                  <% when "integer", "float" %>
+                    <input type="number" 
+                           name="function_inputs[<%= param_name %>]"
+                           id="function_inputs_<%= param_name %>"
+                           <% if config["type"] == "float" %>step="any"<% end %>
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           <%= "required" if config["required"] %>>
+                  <% when "array" %>
+                    <textarea name="function_inputs[<%= param_name %>]"
+                              id="function_inputs_<%= param_name %>"
+                              rows="3"
+                              placeholder="Digite os valores separados por vírgulas"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                              <%= "required" if config["required"] %>></textarea>
+                    <p class="mt-1 text-xs text-gray-500">Separe múltiplos valores com vírgulas</p>
+                  <% else %>
+                    <input type="text" 
+                           name="function_inputs[<%= param_name %>]"
+                           id="function_inputs_<%= param_name %>"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                           <%= "required" if config["required"] %>>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          </div>
+      <% else %>
+        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+          <div class="flex items-center">
+            <svg class="h-5 w-5 text-blue-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+              <h3 class="text-sm font-medium text-blue-800">
+                Nenhum parâmetro definido
+              </h3>
+              <p class="mt-1 text-sm text-blue-700">
+                Esta função não requer parâmetros de entrada.
+              </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="flex justify-end">
+        <button type="submit" 
+                data-turbo-submits-with="Executando..."
+                class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors inline-flex items-center disabled:opacity-50">
+          <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6 4h1m4 0h1"></path>
+          </svg>
+          Executar Função
+        </button>
+      </div>
+    <% end %>
+
+    <div data-execution-target="loadingIndicator" class="hidden mt-8 pt-6 border-t border-gray-200">
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <div>
+            <h3 class="text-sm font-medium text-blue-800">Executando função...</h3>
+            <p class="text-sm text-blue-700">Aguarde enquanto processamos sua solicitação.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= turbo_frame_tag "execution_result" do %>
+      <% if @execution_result.present? %>
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Resultado da Execução</h3>
+          
+          <% if @execution_result[:error].present? %>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h4 class="text-sm font-medium text-red-800">Erro na Execução</h4>
+                  <div class="mt-2 text-sm text-red-700">
+                    <p><%= @execution_result[:error] %></p>
+                    <% if @execution_result[:backtrace].present? %>
+                      <details class="mt-3">
+                        <summary class="cursor-pointer font-medium hover:text-red-600">Ver Stack Trace</summary>
+                        <pre class="mt-2 text-xs bg-red-100 p-3 rounded font-mono"><%= @execution_result[:backtrace].join("\n") %></pre>
+                      </details>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <h4 class="text-sm font-medium text-green-800">Execução Bem-sucedida</h4>
+                  <div class="mt-4 space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-lg">
+                      <div class="px-4 py-2 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                        <h5 class="text-sm font-medium text-gray-900">Valor Retornado</h5>
+                      </div>
+                      <div class="p-4">
+                        <pre class="text-sm text-gray-900 whitespace-pre-wrap font-mono bg-gray-100 p-3 rounded"><%= @execution_result[:result].inspect %></pre>
+                      </div>
+                    </div>
+                    
+                    <% if @execution_result[:output].present? && !@execution_result[:output].string.blank? %>
+                      <div class="bg-white border border-gray-200 rounded-lg">
+                        <div class="px-4 py-2 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                          <h5 class="text-sm font-medium text-gray-900">Saída do Console</h5>
+                        </div>
+                        <div class="p-4">
+                          <pre class="text-sm text-gray-900 whitespace-pre-wrap font-mono bg-gray-100 p-3 rounded"><%= @execution_result[:output].string %></pre>
+                        </div>
+                      </div>
+                    <% end %>
+                    
+                    <div class="text-xs text-gray-500">
+                      Executado em: <%= @execution_result[:executed_at]&.strftime("%d/%m/%Y às %H:%M:%S") %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
