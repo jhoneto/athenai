@@ -19,7 +19,12 @@ Rails.application.routes.draw do
   root "home#index"
 
   resources :workspaces do
-    resources :functions
+    resources :functions do
+      member do
+        get :execute
+        post :run
+      end
+    end
     resources :llms
     resources :agents do
       resources :agent_functions, only: [ :index, :create, :destroy ]
