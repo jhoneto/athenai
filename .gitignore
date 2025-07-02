@@ -38,3 +38,7 @@
 .byebug_history
 
 /app/tool/*
+# ClaudeOnRails
+.claude-on-rails/sessions/
+.claude-swarm/
+claude-swarm.log

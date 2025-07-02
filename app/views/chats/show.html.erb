@@ -1,0 +1,84 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar com lista de chats -->
+  <div class="w-1/3 bg-white border-r border-gray-300 flex flex-col">
+    <!-- Header do sidebar -->
+    <div class="p-4 bg-gray-50 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-800">Chats - <%= @agent.name %></h2>
+        <%= button_to workspace_agent_chats_path(@workspace, @agent), method: :post, class: "bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors border-0" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Lista de chats -->
+    <div class="flex-1 overflow-y-auto">
+      <% @chats.each do |chat| %>
+        <%= link_to workspace_agent_chat_path(@workspace, @agent, chat), 
+            class: "block p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors #{'bg-blue-50' if @current_chat.id == chat.id}" do %>
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  <%= chat.id.to_s.last(2) %>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Chat #<%= chat.id %></p>
+                  <p class="text-xs text-gray-500">
+                    <% if chat.messages.any? %>
+                      <%= truncate(chat.messages.last.content, length: 30) %>
+                    <% else %>
+                      Novo chat
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-400">
+              <%= time_ago_in_words(chat.updated_at) %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Footer do sidebar -->
+    <div class="p-4 bg-gray-50 border-t border-gray-200">
+      <%= link_to workspace_agent_path(@workspace, @agent), class: "text-sm text-blue-600 hover:text-blue-800" do %>
+        ← Voltar ao Agente
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Área principal do chat -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header do chat -->
+    <div class="p-4 bg-white border-b border-gray-200">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+          <%= @current_chat.id.to_s.last(2) %>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900">Chat #<%= @current_chat.id %></h3>
+          <p class="text-sm text-gray-500">Com <%= @agent.name %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de mensagens -->
+    <div id="messages-container" class="flex-1 overflow-y-auto p-4 bg-gray-50">
+      <%= turbo_frame_tag "messages" do %>
+        <%= render partial: 'messages', locals: { messages: @messages } %>
+      <% end %>
+    </div>
+
+    <!-- Input de mensagem -->
+    <div class="p-4 bg-white border-t border-gray-200">
+      <%= turbo_frame_tag "message-form" do %>
+        <%= render partial: 'message_form', locals: { workspace: @workspace, agent: @agent, chat: @current_chat } %>
+      <% end %>
+    </div>
+  </div>
+</div>
