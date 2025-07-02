@@ -3,8 +3,8 @@
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900"><%= @agent.name %></h1>
       <div class="flex space-x-2">
-        <%= link_to workspace_agent_chats_path(@workspace, @agent), method: :post, params: { chat: { title: "Chat #{@agent.chats.count + 1}" } }, class: "bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors" do %>
-          💬 Iniciar Chat
+        <%= link_to workspace_agent_chats_path(@workspace, @agent), class: "bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors" do %>
+          🧪 Testar
         <% end %>
         <%= link_to edit_workspace_agent_path(@workspace, @agent), class: "bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors" do %>
           Editar
@@ -61,7 +61,7 @@
             <% end %>
           </div>
         <% else %>
-          <p class="text-sm text-gray-500">Nenhuma conversa ainda. Clique em "Iniciar Chat" para começar.</p>
+          <p class="text-sm text-gray-500">Nenhuma conversa ainda. Clique em "Testar" para começar.</p>
         <% end %>
       </div>
       

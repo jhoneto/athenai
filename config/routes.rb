@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     resources :llms
     resources :agents do
       resources :agent_functions, only: [ :index, :create, :destroy ]
-      resources :chats, only: [ :show, :create, :destroy ] do
+      resources :chats, only: [ :index, :show, :create, :destroy ] do
         resources :messages, only: [ :create ]
       end
     end
