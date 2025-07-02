@@ -3,6 +3,9 @@
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900"><%= @agent.name %></h1>
       <div class="flex space-x-2">
+        <%= link_to workspace_agent_chats_path(@workspace, @agent), method: :post, params: { chat: { title: "Chat #{@agent.chats.count + 1}" } }, class: "bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors" do %>
+          💬 Iniciar Chat
+        <% end %>
         <%= link_to edit_workspace_agent_path(@workspace, @agent), class: "bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors" do %>
           Editar
         <% end %>
@@ -36,6 +39,30 @@
             <dd class="text-sm text-gray-900"><%= @workspace.name %></dd>
           </div>
         </dl>
+      </div>
+      
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Conversas Recentes (<%= @agent.chats.count %>)</h3>
+        <% if @agent.chats.any? %>
+          <div class="space-y-2">
+            <% @agent.chats.ordered.limit(5).each do |chat| %>
+              <div class="flex items-center justify-between p-2 bg-white rounded border">
+                <div class="flex-1">
+                  <span class="text-sm font-medium text-gray-900"><%= chat.title %></span>
+                  <p class="text-xs text-gray-500 truncate"><%= chat.preview_message %></p>
+                </div>
+                <%= link_to workspace_agent_chat_path(@workspace, @agent, chat), class: "text-blue-600 hover:text-blue-800 text-sm ml-2" do %>
+                  Abrir →
+                <% end %>
+              </div>
+            <% end %>
+            <% if @agent.chats.count > 5 %>
+              <p class="text-xs text-gray-500 text-center">e mais <%= @agent.chats.count - 5 %> conversa(s)...</p>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">Nenhuma conversa ainda. Clique em "Iniciar Chat" para começar.</p>
+        <% end %>
       </div>
       
       <div class="bg-gray-50 p-4 rounded-lg">

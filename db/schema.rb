@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_02_131754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,10 +67,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
 
   create_table "chats", force: :cascade do |t|
     t.string "model_id"
-    t.bigint "agent_id", null: false
+    t.bigint "workspace_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["agent_id"], name: "index_chats_on_agent_id"
+    t.string "title", default: "Nova Conversa", null: false
+    t.index ["workspace_id"], name: "index_chats_on_workspace_id"
   end
 
   create_table "functions", force: :cascade do |t|
@@ -168,7 +169,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
   add_foreign_key "agent_functions", "functions"
   add_foreign_key "agents", "llms"
   add_foreign_key "agents", "workspaces"
-  add_foreign_key "chats", "agents"
+  add_foreign_key "chats", "workspaces"
   add_foreign_key "functions", "workspaces"
   add_foreign_key "llms", "workspaces"
   add_foreign_key "messages", "chats"
