@@ -6,4 +6,5 @@ class Agent < ApplicationRecord
   belongs_to :llm
   has_many :agent_functions, dependent: :destroy
   has_many :functions, through: :agent_functions
+  has_many :chats, dependent: :destroy
 end

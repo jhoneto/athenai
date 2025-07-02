@@ -1,0 +1,51 @@
+<%= form_with url: create_message_workspace_agent_chat_path(workspace, agent, chat), 
+    method: :post, id: "message-form", class: "flex space-x-2" do |f| %>
+  <%= f.text_field "message[content]", placeholder: "Digite sua mensagem...", 
+      class: "flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500", 
+      id: "message-input", autocomplete: "off" %>
+  <%= f.submit "Enviar", class: "bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors" %>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const messageInput = document.getElementById('message-input');
+  const messagesContainer = document.getElementById('messages-container');
+
+  if (messageInput) {
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('message-form').requestSubmit();
+      }
+    });
+
+    // Focus no input após turbo stream update
+    messageInput.focus();
+  }
+
+  function scrollToBottom() {
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+
+  // Scroll para o final quando há novos conteúdos
+  scrollToBottom();
+
+  // Observer para detectar mudanças no DOM e fazer scroll
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList') {
+        scrollToBottom();
+      }
+    });
+  });
+
+  if (messagesContainer) {
+    observer.observe(messagesContainer, {
+      childList: true,
+      subtree: true
+    });
+  }
+});
+</script>
