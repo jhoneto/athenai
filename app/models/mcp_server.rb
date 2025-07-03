@@ -13,6 +13,25 @@ class McpServer < ApplicationRecord
     headers.is_a?(Hash) ? headers : {}
   end
 
+  def list_tools
+    client = RubyLLM::MCP.client(
+      name: name,
+      transport_type: :streamable,
+      config: {
+        url: url,
+        headers: headers_hash
+      }
+    )
+
+    puts client
+
+    # tools = client.tools
+    # puts "Available tools:"
+    # tools.each do |tool|
+    #   puts "- #{tool.name}: #{tool.description}"
+    # end
+  end
+
   private
 
   def headers_must_be_valid_json
