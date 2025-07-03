@@ -3,7 +3,7 @@ class AgentsController < BaseController
   before_action :set_agent, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @agents = @workspace.agents.includes(:llm)
+    @agents = @workspace.agents.includes(:llm, :functions, :mcp_servers)
   end
 
   def show

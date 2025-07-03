@@ -1,0 +1,106 @@
+<div class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900"><%= @mcp_server.name %></h1>
+      <div class="flex space-x-2">
+        <%= link_to edit_workspace_mcp_server_path(@workspace, @mcp_server), class: "bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors" do %>
+          Editar
+        <% end %>
+        <%= link_to [@workspace, @mcp_server], method: :delete, confirm: 'Tem certeza?', class: "bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors" do %>
+          Excluir
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-6 space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Informações Básicas</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Nome</label>
+            <p class="mt-1 text-sm text-gray-900"><%= @mcp_server.name %></p>
+          </div>
+          
+          <% if @mcp_server.description.present? %>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Descrição</label>
+              <p class="mt-1 text-sm text-gray-900"><%= @mcp_server.description %></p>
+            </div>
+          <% end %>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700">URL</label>
+            <p class="mt-1 text-sm text-gray-900 font-mono bg-gray-100 px-3 py-2 rounded"><%= @mcp_server.url %></p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Status</label>
+            <div class="mt-1">
+              <% if @mcp_server.enabled? %>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                  Ativo
+                </span>
+              <% else %>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                  Inativo
+                </span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Headers HTTP</h3>
+        
+        <% if @mcp_server.headers_hash.present? %>
+          <div class="border border-gray-200 rounded-lg">
+            <% @mcp_server.headers_hash.each_with_index do |(key, value), index| %>
+              <div class="<%= 'border-b border-gray-200' unless index == @mcp_server.headers_hash.size - 1 %> px-4 py-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium text-gray-700"><%= key %></span>
+                  <span class="text-sm text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded"><%= value %></span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500 italic">Nenhum header configurado</p>
+        <% end %>
+      </div>
+    </div>
+    
+    <div>
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Agentes Associados</h3>
+      
+      <% if @mcp_server.agents.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @mcp_server.agents.each do |agent| %>
+            <div class="border border-gray-200 rounded-lg p-4">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-medium text-gray-900"><%= agent.name %></h4>
+                <%= link_to [@workspace, agent], class: "text-blue-600 hover:text-blue-800 text-sm" do %>
+                  Ver Agente
+                <% end %>
+              </div>
+              <% if agent.prompt.present? %>
+                <p class="text-xs text-gray-500"><%= truncate(agent.prompt, length: 80) %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-gray-500 italic">Nenhum agente associado a este servidor MCP</p>
+      <% end %>
+    </div>
+    
+    <div class="pt-6 border-t">
+      <%= link_to workspace_mcp_servers_path(@workspace), class: "bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors" do %>
+        Voltar para Lista
+      <% end %>
+    </div>
+  </div>
+</div>

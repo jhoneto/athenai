@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_03_003713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
     t.index ["agent_id", "function_id"], name: "index_agent_functions_on_agent_id_and_function_id", unique: true
     t.index ["agent_id"], name: "index_agent_functions_on_agent_id"
     t.index ["function_id"], name: "index_agent_functions_on_function_id"
+  end
+
+  create_table "agent_mcp_servers", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.bigint "mcp_server_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id", "mcp_server_id"], name: "index_agent_mcp_servers_on_agent_id_and_mcp_server_id", unique: true
+    t.index ["agent_id"], name: "index_agent_mcp_servers_on_agent_id"
+    t.index ["mcp_server_id"], name: "index_agent_mcp_servers_on_mcp_server_id"
   end
 
   create_table "agents", force: :cascade do |t|
@@ -99,6 +109,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["workspace_id"], name: "index_llms_on_workspace_id"
+  end
+
+  create_table "mcp_servers", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "url", null: false
+    t.jsonb "headers", default: {}
+    t.boolean "enabled", default: true
+    t.bigint "workspace_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enabled"], name: "index_mcp_servers_on_enabled"
+    t.index ["headers"], name: "index_mcp_servers_on_headers", using: :gin
+    t.index ["workspace_id"], name: "index_mcp_servers_on_workspace_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -166,11 +190,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_28_123359) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_functions", "agents"
   add_foreign_key "agent_functions", "functions"
+  add_foreign_key "agent_mcp_servers", "agents"
+  add_foreign_key "agent_mcp_servers", "mcp_servers"
   add_foreign_key "agents", "llms"
   add_foreign_key "agents", "workspaces"
   add_foreign_key "chats", "agents"
   add_foreign_key "functions", "workspaces"
   add_foreign_key "llms", "workspaces"
+  add_foreign_key "mcp_servers", "workspaces"
   add_foreign_key "messages", "chats"
   add_foreign_key "messages", "tool_calls"
   add_foreign_key "tool_calls", "messages"

@@ -9,13 +9,16 @@
         <%= link_to workspace_agent_agent_functions_path(@workspace, @agent), class: "bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors" do %>
           Gerenciar Funções
         <% end %>
+        <%= link_to workspace_agent_agent_mcp_servers_path(@workspace, @agent), class: "bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors" do %>
+          Gerenciar Servidores MCP
+        <% end %>
         <%= link_to workspace_agent_chats_path(@workspace, @agent), class: "bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors" do %>
           Testar Chat
         <% end %>
       </div>
     </div>
   </div>
-  
+
   <div class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <div class="bg-gray-50 p-4 rounded-lg">
@@ -40,7 +43,7 @@
           </div>
         </dl>
       </div>
-      
+
       <div class="bg-gray-50 p-4 rounded-lg">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Funções Associadas (<%= @agent.functions.count %>)</h3>
         <% if @agent.functions.any? %>
@@ -59,12 +62,51 @@
         <% end %>
       </div>
     </div>
-    
+
+    <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Servidores MCP Associados (<%= @agent.mcp_servers.count %>)</h3>
+        <% if @agent.mcp_servers.any? %>
+          <div class="space-y-2">
+            <% @agent.mcp_servers.each do |mcp_server| %>
+              <div class="flex items-center justify-between p-3 bg-white rounded border">
+                <div>
+                  <span class="text-sm font-medium text-gray-900"><%= mcp_server.name %></span>
+                  <% if mcp_server.description.present? %>
+                    <p class="text-xs text-gray-500 mt-1"><%= truncate(mcp_server.description, length: 80) %></p>
+                  <% end %>
+                  <p class="text-xs text-gray-600 font-mono bg-gray-100 px-2 py-1 rounded mt-1 inline-block">
+                    <%= truncate(mcp_server.url, length: 50) %>
+                  </p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <% if mcp_server.enabled? %>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      Ativo
+                    </span>
+                  <% else %>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                      Inativo
+                    </span>
+                  <% end %>
+                  <%= link_to [@workspace, mcp_server], class: "text-blue-600 hover:text-blue-800 text-sm" do %>
+                    Ver →
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">Nenhum servidor MCP associado ainda.</p>
+        <% end %>
+      </div>
+    </div>
+
     <div class="bg-gray-50 p-4 rounded-lg">
       <h3 class="text-lg font-medium text-gray-900 mb-4">Prompt do Sistema</h3>
       <pre class="bg-gray-800 text-green-400 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap"><%= @agent.prompt %></pre>
     </div>
-    
+
     <div class="flex space-x-3 mt-6 pt-6 border-t">
       <%= link_to workspace_agents_path(@workspace), class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors" do %>
         ← Voltar para Agentes
