@@ -7,6 +7,7 @@ class Workspace < ApplicationRecord
   has_many :functions, dependent: :destroy
   has_many :llms, dependent: :destroy
   has_many :agents, dependent: :destroy
+  has_many :mcp_servers, dependent: :destroy
 
   before_create :generate_api_credentials
 

@@ -1,0 +1,90 @@
+<%= form_with model: model, local: true, class: "space-y-6", data: { controller: "mcp-server-form" } do |form| %>
+  <% if model.last.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <h4 class="text-sm font-medium text-red-800 mb-2">
+        <%= pluralize(model.last.errors.count, "erro") %> impediu que este servidor MCP fosse salvo:
+      </h4>
+      <ul class="text-sm text-red-700 list-disc list-inside">
+        <% model.last.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, "Nome", class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.text_field :name, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+        placeholder: "Digite o nome do servidor MCP" %>
+  </div>
+
+  <div>
+    <%= form.label :description, "Descrição", class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.text_area :description, rows: 3, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+        placeholder: "Descreva para que serve este servidor MCP" %>
+    <p class="text-xs text-gray-500 mt-1">Descrição clara da funcionalidade do servidor</p>
+  </div>
+
+  <div>
+    <%= form.label :url, "URL do Servidor", class: "block text-sm font-medium text-gray-700 mb-2" %>
+    <%= form.url_field :url, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+        placeholder: "https://exemplo.com/mcp" %>
+    <p class="text-xs text-gray-500 mt-1">URL HTTP/HTTPS para comunicação com o servidor MCP</p>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <%= form.label :headers, "Headers HTTP", class: "block text-sm font-medium text-gray-700" %>
+      <button type="button" data-mcp-server-form-target="addHeader" data-action="click->mcp-server-form#addHeader" class="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+        + Adicionar Header
+      </button>
+    </div>
+    
+    <div data-mcp-server-form-target="headersContainer" class="space-y-3 border border-gray-200 rounded-md p-4 bg-gray-50">
+      <% headers = form.object.headers_hash %>
+      <% if headers.present? %>
+        <% headers.each_with_index do |(key, value), index| %>
+          <div class="header-row bg-white p-3 rounded border" data-mcp-server-form-target="headerRow">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Nome do Header</label>
+                <input type="text" data-mcp-server-form-target="headerKey" value="<%= key %>" data-action="input->mcp-server-form#updateHeadersField"
+                       class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="Authorization, Content-Type, etc.">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Valor</label>
+                <input type="text" data-mcp-server-form-target="headerValue" value="<%= value %>" data-action="input->mcp-server-form#updateHeadersField"
+                       class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="Bearer token123, application/json, etc.">
+              </div>
+              <div class="flex items-end">
+                <button type="button" data-mcp-server-form-target="removeHeader" 
+                        data-action="click->mcp-server-form#removeHeader"
+                        class="w-full bg-red-600 text-white px-2 py-1 text-sm rounded hover:bg-red-700">
+                  Remover
+                </button>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+      
+      <div data-mcp-server-form-target="emptyState" class="text-center text-gray-500 py-4 <%= 'hidden' if headers.present? %>">
+        Nenhum header configurado. Headers HTTP são enviados em todas as requisições para o servidor.
+      </div>
+    </div>
+    
+    <%= form.hidden_field :headers, data: { mcp_server_form_target: "headersField" }, value: form.object.headers.to_json %>
+  </div>
+
+  <div class="flex items-center">
+    <%= form.check_box :enabled, class: "mr-2" %>
+    <%= form.label :enabled, "Servidor ativo", class: "text-sm font-medium text-gray-700" %>
+  </div>
+
+  <div class="flex space-x-3 pt-6 border-t">
+    <%= form.submit submit_text, class: "bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors" %>
+    <%= link_to 'Voltar', back_path, class: "bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors" %>
+  </div>
+<% end %>

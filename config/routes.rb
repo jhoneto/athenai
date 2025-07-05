@@ -26,8 +26,10 @@ Rails.application.routes.draw do
       end
     end
     resources :llms
+    resources :mcp_servers
     resources :agents do
       resources :agent_functions, only: [ :index, :create, :destroy ]
+      resources :agent_mcp_servers, only: [ :index, :create, :destroy ]
       resources :chats, only: [ :index, :show, :create ] do
         member do
           post :create_message
