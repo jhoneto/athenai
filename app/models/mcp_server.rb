@@ -13,23 +13,50 @@ class McpServer < ApplicationRecord
     headers.is_a?(Hash) ? headers : {}
   end
 
+  def self.test
+    Timeout.timeout(5) do
+      client = RubyLLM::MCP.client(
+        name: "local_mcp",
+        transport_type: :sse,
+        config: {
+          url: "http://localhost:3000/mcp/sse"
+        }
+      )
+
+      tools = client.tools
+      puts "Tools:\n"
+      puts tools.map { |tool| "  #{tool.name}: #{tool.description}" }.join("\n")
+      puts "\nTotal tools: #{tools.size}"
+    end
+  rescue Timeout::Error
+    puts "❌ Timeout: Cliente travou por mais de 10 segundos"
+    puts "Problema: Servidor não está respondendo SSE corretamente"
+  rescue => e
+    puts "❌ Erro: #{e.message}"
+  end
+
   def list_tools
-    client = RubyLLM::MCP.client(
-      name: name,
-      transport_type: :streamable,
-      config: {
-        url: url,
-        headers: headers_hash
-      }
-    )
+    Timeout.timeout(10) do
+      client = RubyLLM::MCP.client(
+        name: name,
+        transport_type: :sse,
+        config: {
+          url: url,
+          headers: headers_hash
+        }
+      )
 
-    puts client
-
-    # tools = client.tools
-    # puts "Available tools:"
-    # tools.each do |tool|
-    #   puts "- #{tool.name}: #{tool.description}"
-    # end
+      tools = client.tools
+      puts "Available tools:"
+      tools.each do |tool|
+        puts "- #{tool.name}: #{tool.description}"
+      end
+    end
+  rescue Timeout::Error
+    puts "❌ Timeout: Cliente travou por mais de 10 segundos"
+    puts "Problema: Servidor não está respondendo SSE corretamente"
+  rescue => e
+    puts "❌ Erro: #{e.message}"
   end
 
   private
