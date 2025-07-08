@@ -83,4 +83,4 @@ group :test do
 end
 
 gem "ruby_llm", "~> 1.3", ">= 1.3.1"
-gem "tailwindcss-rails", "~> 4.2"
+gem "tailwindcss-rails", "~> 4.3"
