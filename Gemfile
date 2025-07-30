@@ -76,7 +76,7 @@ group :test do
   gem "selenium-webdriver"
 
   # Database cleaner for test isolation
-  gem "database_cleaner-active_record", "~> 2.1"
+  gem "database_cleaner-active_record", "~> 2.2"
 
   # HTTP request stubbing for testing
   gem "webmock", "~> 3.18"
