@@ -82,5 +82,5 @@ group :test do
   gem "webmock", "~> 3.18"
 end
 
-gem "ruby_llm", "~> 1.3", ">= 1.3.1"
+gem "ruby_llm", "~> 1.5"
 gem "tailwindcss-rails", "~> 4.2"
