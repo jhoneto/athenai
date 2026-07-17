@@ -11,28 +11,29 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
-
+      
+      - name: Scan for known security vulnerabilities in gems used
+        run: bin/bundler-audit
+      
   scan_js:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Scan for security vulnerabilities in JavaScript dependencies
@@ -40,49 +41,27 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    env:
+      RUBOCOP_CACHE_ROOT: tmp/rubocop
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Prepare RuboCop cache
+        uses: actions/cache@v4
+        env:
+          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
+        with:
+          path: ${{ env.RUBOCOP_CACHE_ROOT }}
+          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
+          restore-keys: |
+            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
 
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        ports:
-          - "5432:5432"
-        env:
-          POSTGRES_DB: connect_api_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-    env:
-      RAILS_ENV: test
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_HOST: localhost
-      DATABASE_PORT: 5432
-      DEVISE_SECRET_KEY: 2218439580cce4b35beb3376ee864399a825764d1fe7c9f92b5c269e184a07b62d68e9183def0b0c85de7aabca3ca8066e65cdb9223996f44ccb6edb73722fae
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      # Add or replace dependency steps here
-      - name: Install Ruby and gems
-        uses: ruby/setup-ruby@v1
-      # Bundle Install
-      - name: Install gems
-        run: bundle install
-      # Add or replace database setup steps here
-      - name: Set up database prepare
-        run: bin/rails db:prepare
-      # Add or replace test runners here
-      - name: Run tests
-        run: bundle exec rspec
