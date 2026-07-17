@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR" class="h-full">
   <head>
     <title><%= content_for(:title) || "Athenai" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,23 +8,39 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%# Prevent flash of wrong theme — runs synchronously before first paint %>
+    <script>
+      (function() {
+        var t = localStorage.getItem("athenai-theme");
+        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="h-full bg-canvas text-ink antialiased dark:bg-canvas-dark dark:text-ink-dark">
+    <%# Flash messages %>
+    <% if notice %>
+      <div class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow dark:border-green-800 dark:bg-green-950/60 dark:text-green-300">
+        <%= notice %>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow dark:border-red-800 dark:bg-red-950/60 dark:text-red-300">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <main class="p-8">
       <%= yield %>
     </main>
   </body>

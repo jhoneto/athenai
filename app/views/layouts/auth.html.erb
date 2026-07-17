@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+  <head>
+    <title><%= content_for(:title) || "Athenai" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Athenai">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Prevent flash of wrong theme — runs synchronously before first paint %>
+    <script>
+      (function() {
+        var t = localStorage.getItem("athenai-theme");
+        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full bg-canvas text-ink antialiased dark:bg-canvas-dark dark:text-ink-dark">
+    <div class="flex min-h-full flex-col items-center justify-center px-4 py-12">
+      <div class="w-full max-w-sm">
+        <%# Logo %>
+        <div class="mb-8 text-center text-2xl font-bold tracking-tight">
+          <span class="text-ink dark:text-ink-dark">Athenai</span>
+        </div>
+
+        <%# Flash messages %>
+        <% if notice %>
+          <div class="mb-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/60 dark:text-green-300">
+            <%= notice %>
+          </div>
+        <% end %>
+        <% if alert %>
+          <div class="mb-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300">
+            <%= alert %>
+          </div>
+        <% end %>
+
+        <%# Card %>
+        <div class="rounded-xl border border-edge bg-panel p-6 shadow-sm dark:border-edge-dark dark:bg-panel-dark">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
