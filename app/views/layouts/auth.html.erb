@@ -12,46 +12,74 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Prevent flash of wrong theme — runs synchronously before first paint %>
-    <script>
-      (function() {
-        var t = localStorage.getItem("athenai-theme");
-        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
-
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-full bg-canvas text-ink antialiased dark:bg-canvas-dark dark:text-ink-dark">
-    <div class="flex min-h-full flex-col items-center justify-center px-4 py-12">
-      <div class="w-full max-w-sm">
-        <%# Logo %>
-        <div class="mb-8 text-center text-2xl font-bold tracking-tight">
-          <span class="text-ink dark:text-ink-dark">Athenai</span>
+  <body class="h-full bg-background antialiased">
+    <div class="flex min-h-full">
+
+      <%# Left panel — branding %>
+      <div class="hidden lg:flex lg:w-1/2 flex-col justify-between bg-primary-700 px-12 py-16">
+        <div>
+          <span class="text-2xl font-bold text-white">Athenai</span>
         </div>
-
-        <%# Flash messages %>
-        <% if notice %>
-          <div class="mb-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/60 dark:text-green-300">
-            <%= notice %>
+        <div>
+          <blockquote class="text-white/90 text-lg font-medium leading-relaxed">
+            "Adicione IA em qualquer software.<br>
+            Sem reinventar a infraestrutura."
+          </blockquote>
+          <div class="mt-8 flex flex-col gap-2">
+            <div class="flex items-center gap-2 text-white/80 text-sm">
+              <svg class="w-4 h-4 text-primary-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              API First — uma chamada, um agente
+            </div>
+            <div class="flex items-center gap-2 text-white/80 text-sm">
+              <svg class="w-4 h-4 text-primary-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Conectores prontos: REST, PostgreSQL, OpenAPI
+            </div>
+            <div class="flex items-center gap-2 text-white/80 text-sm">
+              <svg class="w-4 h-4 text-primary-300 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Suporta OpenAI, Anthropic, Gemini e mais
+            </div>
           </div>
-        <% end %>
-        <% if alert %>
-          <div class="mb-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300">
-            <%= alert %>
-          </div>
-        <% end %>
+        </div>
+        <p class="text-white/40 text-xs">© <%= Time.current.year %> Athenai. Todos os direitos reservados.</p>
+      </div>
 
-        <%# Card %>
-        <div class="rounded-xl border border-edge bg-panel p-6 shadow-sm dark:border-edge-dark dark:bg-panel-dark">
-          <%= yield %>
+      <%# Right panel — form %>
+      <div class="flex flex-1 flex-col items-center justify-center px-6 py-12">
+        <div class="w-full max-w-sm">
+          <%# Mobile logo %>
+          <div class="mb-8 text-center lg:hidden">
+            <span class="text-2xl font-bold text-primary-700">Athenai</span>
+          </div>
+
+          <%# Flash messages %>
+          <% if notice %>
+            <div class="mb-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+              <%= notice %>
+            </div>
+          <% end %>
+          <% if alert %>
+            <div class="mb-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+              <%= alert %>
+            </div>
+          <% end %>
+
+          <%# Card %>
+          <div class="card shadow-sm">
+            <%= yield %>
+          </div>
         </div>
       </div>
+
     </div>
   </body>
 </html>

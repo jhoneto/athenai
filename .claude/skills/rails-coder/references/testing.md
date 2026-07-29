@@ -1,5 +1,9 @@
 # Padrões de Testes (RSpec)
 
+## Regra Principal
+
+**Todo código de teste deve ser escrito em inglês:** `describe`, `context`, `it`, nomes de variáveis, mensagens de expectativa e comentários. O português é reservado para documentação e comunicação com o usuário.
+
 ## Organização dos Testes
 
 ```
@@ -29,16 +33,16 @@ RSpec.describe Account do
     it { is_expected.to have_many(:users).through(:account_users) }
   end
 
-  describe "validações" do
+  describe "validations" do
     it { is_expected.to validate_presence_of(:name) }
   end
 
   describe "#owner" do
-    it "retorna o usuário com role owner" do
+    it "returns the user with owner role" do
       account = create(:account)
-      owner = create(:user)
+      owner   = create(:user)
       create(:account_user, account: account, user: owner, role: :owner)
-      member = create(:user)
+      member  = create(:user)
       create(:account_user, account: account, user: member, role: :member)
 
       expect(account.users.joins(:account_users).where(account_users: { role: :owner }).first).to eq(owner)
@@ -58,16 +62,16 @@ RSpec.describe "Users::Registrations" do
     let(:valid_params) do
       {
         user: {
-          name: "João Silva",
-          email: "joao@example.com",
-          password: "senha12345",
-          password_confirmation: "senha12345",
-          account_name: "Minha Empresa"
+          name: "John Doe",
+          email: "john@example.com",
+          password: "password123",
+          password_confirmation: "password123",
+          account_name: "My Clinic"
         }
       }
     end
 
-    it "cria user, account e account_user" do
+    it "creates user, account and account_user" do
       expect {
         post user_registration_path, params: valid_params
       }.to change(User, :count).by(1)
@@ -75,13 +79,13 @@ RSpec.describe "Users::Registrations" do
         .and change(AccountUser, :count).by(1)
     end
 
-    it "define o role como owner" do
+    it "sets account_user role to owner" do
       post user_registration_path, params: valid_params
       expect(AccountUser.last.role).to eq("owner")
     end
 
-    it "rejeita email duplicado" do
-      create(:user, email: "joao@example.com")
+    it "rejects duplicate email" do
+      create(:user, email: "john@example.com")
       post user_registration_path, params: valid_params
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -97,7 +101,7 @@ RSpec.describe WelcomeEmailJob do
   let(:user) { create(:user) }
 
   describe "#perform" do
-    it "envia o email de boas-vindas" do
+    it "enqueues the welcome email" do
       expect { described_class.perform_now(user) }
         .to have_enqueued_mail(UserMailer, :welcome)
     end
@@ -158,56 +162,56 @@ end
 ### Uso
 
 ```ruby
-# Básico
+# Basic
 account = create(:account)
-user = build(:user)  # Não persistido
+user    = build(:user)  # not persisted
 
-# Com traits
+# With traits
 account_user = create(:account_user, :owner)
 
-# Com overrides
+# With overrides
 user = create(:user, email: "custom@example.com")
 
-# Listas
+# Lists
 users = create_list(:user, 3)
 ```
 
 ## Test Helpers
 
 ```ruby
-# spec/support/authentication_helper.rb — (incluído via Devise::Test::IntegrationHelpers)
-# Já configurado no rails_helper.rb
-# Uso nas specs:
+# spec/support/authentication_helper.rb — (included via Devise::Test::IntegrationHelpers)
+# Already configured in rails_helper.rb
+# Usage in specs:
 sign_in create(:user)
 ```
 
 ## O Que NÃO Testar
 
-### Comportamento do Framework
+### Framework Behavior
 
 ```ruby
-# Não teste internals do Rails/Devise
-it "tem um atributo email" do  # Desnecessário
+# Do not test Rails/Devise internals
+it "has an email attribute" do  # unnecessary
   user = User.new(email: "test@example.com")
   expect(user.email).to eq("test@example.com")
 end
 ```
 
-### Código Óbvio
+### Obvious Code
 
 ```ruby
-# Não teste delegações simples
-it "delega email para user" do  # Se usar delegate
+# Do not test simple delegations
+it "delegates email to user" do  # if using delegate
   expect(account_user.user_email).to eq(account_user.user.email)
 end
 ```
 
-### Código Gerado
+### Generated Code
 
-Não teste:
-- Default scopes que apenas encapsulam `where`
-- Validação de presença simples (use shoulda-matchers)
-- Callbacks do ActiveRecord que apenas chamam métodos
+Do not test:
+- Default scopes that only wrap `where`
+- Simple presence validations (use shoulda-matchers)
+- ActiveRecord callbacks that only call methods
 
 ## Configuração do RSpec
 
@@ -219,13 +223,13 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
 end
 
-# Rodar todos os testes
+# Run all tests
 # bundle exec rspec
 
-# Rodar apenas testes rápidos (excluir system)
+# Run only fast tests (exclude system)
 # bundle exec rspec --tag ~type:system
 
-# Rodar system tests
+# Run system tests
 # bundle exec rspec --tag type:system
 ```
 

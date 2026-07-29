@@ -1,0 +1,129 @@
+pt-BR:
+  # ── Datas e formatos ──────────────────────────────────────────────────────────
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m"
+      long: "%d de %B de %Y"
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
+      long: "%d de %B de %Y às %H:%M"
+
+  # ── ActiveRecord ──────────────────────────────────────────────────────────────
+  activerecord:
+    models:
+      account: "Conta"
+      user: "Usuário"
+      plan: "Plano"
+      subscription: "Assinatura"
+      subscription_event: "Evento de assinatura"
+      account_user: "Membro da conta"
+
+    attributes:
+      user:
+        name: "Nome"
+        email: "E-mail"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"
+        account_name: "Nome da empresa"
+      account:
+        name: "Nome da empresa"
+      plan:
+        name: "Nome"
+        slug: "Identificador"
+        analyses_per_month: "Análises por mês"
+        price_cents: "Preço"
+      subscription:
+        status: "Status"
+        analyses_used: "Análises utilizadas"
+        trial_analyses_total: "Análises do trial"
+        trial_analyses_used: "Análises do trial utilizadas"
+
+    errors:
+      messages:
+        record_invalid: "Validação falhou: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "Não é possível excluir o registro pois existe um %{record} dependente"
+          has_many: "Não é possível excluir o registro pois existem %{record} dependentes"
+
+  # ── ActiveModel ───────────────────────────────────────────────────────────────
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: "deve ser aceito"
+      blank: "não pode ficar em branco"
+      confirmation: "não é igual a %{attribute}"
+      empty: "não pode ficar vazio"
+      equal_to: "deve ser igual a %{count}"
+      even: "deve ser par"
+      exclusion: "não está disponível"
+      greater_than: "deve ser maior que %{count}"
+      greater_than_or_equal_to: "deve ser maior ou igual a %{count}"
+      inclusion: "não está incluído na lista"
+      invalid: "não é válido"
+      less_than: "deve ser menor que %{count}"
+      less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+      model_invalid: "Validação falhou: %{errors}"
+      not_a_number: "não é um número"
+      not_an_integer: "deve ser um número inteiro"
+      odd: "deve ser ímpar"
+      other_than: "deve ser diferente de %{count}"
+      present: "deve ficar em branco"
+      required: "é obrigatório(a)"
+      taken: "já está em uso"
+      too_long:
+        one: "é muito longo (máximo: 1 caractere)"
+        other: "é muito longo (máximo: %{count} caracteres)"
+      too_short:
+        one: "é muito curto (mínimo: 1 caractere)"
+        other: "é muito curto (mínimo: %{count} caracteres)"
+      wrong_length:
+        one: "não possui o tamanho esperado (1 caractere)"
+        other: "não possui o tamanho esperado (%{count} caracteres)"
+
+  # ── Planos ────────────────────────────────────────────────────────────────────
+  plans:
+    features:
+      agent_engine: "Motor de agentes"
+      http_connector: "Conector HTTP / OpenAPI"
+      sql_connector: "Conector SQL (PostgreSQL, MySQL)"
+      saas_connectors: "Conectores SaaS (HubSpot, Gmail, etc.)"
+      knowledge_base: "Base de conhecimento (RAG)"
+      tool_engine: "Motor de ferramentas"
+      basic_logs: "Logs básicos"
+      advanced_logs: "Logs e auditoria avançados"
+      webhooks: "Webhooks de saída"
+      streaming: "Streaming de respostas"
+      api_access: "Acesso à API"
+      custom_models: "Modelos customizados"
+      sla_support: "Suporte com SLA"
+
+  # ── Status de assinatura ──────────────────────────────────────────────────────
+  subscription:
+    status:
+      trialing: "Trial"
+      active: "Ativo"
+      past_due: "Pagamento pendente"
+      canceled: "Cancelado"
+      incomplete: "Incompleto"
+
+  # ── Navegação e UI geral ──────────────────────────────────────────────────────
+  nav:
+    subscription: "Assinatura"
+    sign_out: "Sair"
+
+  actions:
+    save: "Salvar"
+    cancel: "Cancelar"
+    confirm: "Confirmar"
+    back: "Voltar"
+    edit: "Editar"
+    delete: "Excluir"
+    create: "Criar"
+
+  flash:
+    success: "Operação realizada com sucesso."
+    error: "Ocorreu um erro. Tente novamente."

@@ -1,1 +1,100 @@
 @import "tailwindcss";
+
+@theme {
+  /* Primary — Violet */
+  --color-primary-50:  #F5F3FF;
+  --color-primary-100: #EDE9FE;
+  --color-primary-200: #DDD6FE;
+  --color-primary-300: #C4B5FD;
+  --color-primary-400: #A78BFA;
+  --color-primary-500: #8B5CF6;
+  --color-primary-600: #7C3AED;
+  --color-primary-700: #6D28D9;
+  --color-primary-800: #5B21B6;
+  --color-primary-900: #4C1D95;
+
+  /* Accent — Indigo */
+  --color-accent-400: #818CF8;
+  --color-accent-500: #6366F1;
+  --color-accent-600: #4F46E5;
+
+  /* Neutral — Slate */
+  --color-slate-50:  #F8FAFC;
+  --color-slate-100: #F1F5F9;
+  --color-slate-200: #E2E8F0;
+  --color-slate-300: #CBD5E1;
+  --color-slate-400: #94A3B8;
+  --color-slate-500: #64748B;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1E293B;
+  --color-slate-900: #0F172A;
+
+  /* Semantic */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger:  #DC2626;
+
+  /* App surfaces */
+  --color-background: #F8F9FA;
+  --color-surface:    #FFFFFF;
+  --color-border:     #E2E8F0;
+
+  /* Typography */
+  --color-text-primary:   #0F172A;
+  --color-text-secondary: #64748B;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-700 hover:bg-primary-800 text-white font-medium
+           py-2 px-4 rounded-lg transition-colors cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium
+           py-2 px-4 rounded-lg border border-primary-200 transition-colors cursor-pointer;
+  }
+
+  .btn-outline {
+    @apply bg-white hover:bg-slate-50 text-slate-700 font-medium
+           py-2 px-4 rounded-lg border border-border transition-colors cursor-pointer;
+  }
+
+  .btn-danger {
+    @apply bg-danger hover:opacity-90 text-white font-medium
+           py-2 px-4 rounded-lg transition-opacity cursor-pointer;
+  }
+
+  .card {
+    @apply bg-surface rounded-xl border border-border p-6;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-trialing   { @apply bg-primary-50  text-primary-700; }
+  .badge-active     { @apply bg-green-100   text-green-800; }
+  .badge-past_due   { @apply bg-amber-100   text-amber-800; }
+  .badge-canceled   { @apply bg-slate-100   text-slate-600; }
+  .badge-incomplete { @apply bg-red-100     text-red-700; }
+
+  .form-input {
+    @apply block w-full rounded-lg border border-border bg-surface
+           px-3 py-2 text-text-primary placeholder-text-secondary
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+           focus:outline-none transition-colors;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-text-primary mb-1;
+  }
+}

@@ -5,6 +5,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
         if user.persisted?
           account = Account.create!(name: account_name_param)
           account.account_users.create!(user: user, role: :owner)
+          account.create_subscription!(
+            status: :trialing,
+            trial_analyses_total: 5,
+            trial_analyses_used: 0
+          )
         end
       end
     end

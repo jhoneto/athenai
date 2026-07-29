@@ -12,36 +12,79 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Prevent flash of wrong theme — runs synchronously before first paint %>
-    <script>
-      (function() {
-        var t = localStorage.getItem("athenai-theme");
-        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
-
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-full bg-canvas text-ink antialiased dark:bg-canvas-dark dark:text-ink-dark">
-    <%# Flash messages %>
-    <% if notice %>
-      <div class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow dark:border-green-800 dark:bg-green-950/60 dark:text-green-300">
-        <%= notice %>
-      </div>
-    <% end %>
-    <% if alert %>
-      <div class="fixed top-4 right-4 z-50 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 shadow dark:border-red-800 dark:bg-red-950/60 dark:text-red-300">
-        <%= alert %>
-      </div>
-    <% end %>
+  <body class="h-full bg-background text-text-primary antialiased">
+    <div class="flex h-full">
 
-    <main class="p-8">
-      <%= yield %>
-    </main>
+      <%# Sidebar %>
+      <aside class="flex w-64 flex-col bg-surface border-r border-border">
+        <%# Logo %>
+        <div class="flex h-16 items-center px-6 border-b border-border">
+          <span class="text-xl font-bold text-primary-700">Athenai</span>
+        </div>
+
+        <%# Nav %>
+        <nav class="flex-1 px-3 py-4 space-y-1">
+          <%= link_to billing_path,
+                class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+                        #{current_page?(billing_path) ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50 hover:text-text-primary'}" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            Assinatura
+          <% end %>
+        </nav>
+
+        <%# User %>
+        <div class="border-t border-border p-3 space-y-3">
+          <div class="flex items-center gap-3 px-2 py-1">
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-primary-700 text-sm font-semibold">
+              <%= current_user.name.first.upcase %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-text-primary truncate"><%= current_user.name %></p>
+              <p class="text-xs text-text-secondary truncate"><%= current_account&.name %></p>
+            </div>
+            <%= link_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete },
+                        class: "text-slate-400 hover:text-danger transition-colors",
+                        title: "Sair" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            <% end %>
+          </div>
+        </div>
+      </aside>
+
+      <%# Main content %>
+      <div class="flex flex-1 flex-col min-w-0">
+        <%# Flash messages %>
+        <% if notice %>
+          <div class="mx-6 mt-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <%= notice %>
+          </div>
+        <% end %>
+        <% if alert %>
+          <div class="mx-6 mt-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            <%= alert %>
+          </div>
+        <% end %>
+
+        <main class="flex-1 p-6">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
   </body>
 </html>
