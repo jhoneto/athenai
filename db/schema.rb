@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_17_160002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_11_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,6 +29,53 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_160002) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "agents", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "llm_profile_id"
+    t.string "name", null: false
+    t.integer "status", default: 0, null: false
+    t.text "system_prompt", default: "", null: false
+    t.float "temperature", default: 0.7, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_agents_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_agents_on_account_id"
+    t.index ["llm_profile_id"], name: "index_agents_on_llm_profile_id"
+  end
+
+  create_table "llm_models", force: :cascade do |t|
+    t.jsonb "capabilities", default: [], null: false
+    t.integer "context_window"
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "family"
+    t.date "knowledge_cutoff"
+    t.integer "max_output_tokens"
+    t.jsonb "metadata", default: {}, null: false
+    t.jsonb "modalities", default: {}, null: false
+    t.datetime "model_created_at"
+    t.string "model_id", null: false
+    t.string "name", null: false
+    t.jsonb "pricing", default: {}, null: false
+    t.string "provider", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "model_id"], name: "index_llm_models_on_provider_and_model_id", unique: true
+    t.index ["provider"], name: "index_llm_models_on_provider"
+  end
+
+  create_table "llm_profiles", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.decimal "credit_multiplier", precision: 6, scale: 2, null: false
+    t.integer "key", null: false
+    t.bigint "llm_model_id"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_llm_profiles_on_key", unique: true
+    t.index ["llm_model_id"], name: "index_llm_profiles_on_llm_model_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -88,6 +135,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_160002) do
 
   add_foreign_key "account_users", "accounts"
   add_foreign_key "account_users", "users"
+  add_foreign_key "agents", "accounts"
+  add_foreign_key "agents", "llm_profiles"
+  add_foreign_key "llm_profiles", "llm_models"
   add_foreign_key "subscription_events", "subscriptions"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "subscriptions", "plans"

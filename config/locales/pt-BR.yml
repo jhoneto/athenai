@@ -21,6 +21,7 @@ pt-BR:
       subscription: "Assinatura"
       subscription_event: "Evento de assinatura"
       account_user: "Membro da conta"
+      agent: "Agente"
 
     attributes:
       user:
@@ -41,6 +42,12 @@ pt-BR:
         analyses_used: "Análises utilizadas"
         trial_analyses_total: "Análises do trial"
         trial_analyses_used: "Análises do trial utilizadas"
+      agent:
+        name: "Nome"
+        description: "Descrição"
+        system_prompt: "Prompt do sistema"
+        llm_profile_id: "Perfil de IA"
+        temperature: "Temperatura"
 
     errors:
       messages:
@@ -112,6 +119,7 @@ pt-BR:
 
   # ── Navegação e UI geral ──────────────────────────────────────────────────────
   nav:
+    agents: "Agentes"
     subscription: "Assinatura"
     sign_out: "Sair"
 
@@ -127,3 +135,26 @@ pt-BR:
   flash:
     success: "Operação realizada com sucesso."
     error: "Ocorreu um erro. Tente novamente."
+
+  # ── Agentes ───────────────────────────────────────────────────────────────────
+  agents:
+    statuses:
+      draft: "Rascunho"
+      published: "Publicado"
+      archived: "Arquivado"
+    index:
+      title: "Agentes"
+      new_button: "Novo agente"
+      empty: "Nenhum agente cadastrado ainda."
+      no_profile: "Sem perfil de IA"
+    new:
+      title: "Novo agente"
+    edit:
+      title: "Editar agente"
+    form:
+      select_profile: "Selecione um perfil"
+    show:
+      no_profile: "Nenhum perfil selecionado"
+      publish: "Publicar"
+      publish_incomplete: "Agente incompleto para publicação"
+      delete_confirm: "Excluir este agente?"

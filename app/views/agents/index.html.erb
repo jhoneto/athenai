@@ -1,0 +1,24 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= t(".title") %></h1>
+    <%= link_to t(".new_button"), new_agent_path, class: "btn-primary" %>
+  </div>
+
+  <div class="card w-full divide-y divide-border">
+    <% if @agents.empty? %>
+      <p class="text-sm text-text-secondary py-4"><%= t(".empty") %></p>
+    <% end %>
+
+    <% @agents.each do |agent| %>
+      <div class="flex flex-wrap items-center justify-between gap-2 py-3">
+        <div>
+          <%= link_to agent.name, agent, class: "font-medium text-text-primary hover:text-primary-700" %>
+          <p class="text-sm text-text-secondary">
+            <%= agent.llm_profile&.name || t(".no_profile") %>
+          </p>
+        </div>
+        <span class="badge badge-<%= agent.status %>"><%= t("agents.statuses.#{agent.status}") %></span>
+      </div>
+    <% end %>
+  </div>
+</div>

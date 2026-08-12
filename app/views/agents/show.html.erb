@@ -1,0 +1,34 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= @agent.name %></h1>
+    <span class="badge badge-<%= @agent.status %>"><%= t("agents.statuses.#{@agent.status}") %></span>
+  </div>
+
+  <div class="card w-full">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <p class="form-label"><%= Agent.human_attribute_name(:llm_profile_id) %></p>
+        <p class="text-text-primary"><%= @agent.llm_profile&.name || t(".no_profile") %></p>
+      </div>
+
+      <div>
+        <p class="form-label"><%= Agent.human_attribute_name(:temperature) %></p>
+        <p class="text-text-primary"><%= @agent.temperature %></p>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="form-label"><%= Agent.human_attribute_name(:system_prompt) %></p>
+        <p class="text-text-primary whitespace-pre-wrap"><%= @agent.system_prompt %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <%= link_to t("actions.edit"), edit_agent_path(@agent), class: "btn-outline" %>
+    <% unless @agent.published? %>
+      <%= button_to t(".publish"), publish_agent_path(@agent), method: :post, class: "btn-primary" %>
+    <% end %>
+    <%= button_to t("actions.delete"), agent_path(@agent), method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+  </div>
+</div>

@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   resource :billing, only: [ :show ], controller: "billing"
 
+  resources :agents do
+    member { post :publish }
+  end
+
   namespace :webhooks do
     post :stripe, to: "stripe#create"
   end

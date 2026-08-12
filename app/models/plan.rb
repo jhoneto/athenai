@@ -1,11 +1,14 @@
 class Plan < ApplicationRecord
   FEATURES = {
-    "starter"    => %w[agent_engine http_connector knowledge_base basic_logs],
+    "starter"    => %w[agent_engine http_connector knowledge_base basic_logs
+                       profile_fast],
     "growth"     => %w[agent_engine http_connector sql_connector knowledge_base
-                       tool_engine advanced_logs webhooks streaming],
+                       tool_engine advanced_logs webhooks streaming
+                       profile_fast profile_balanced profile_premium],
     "enterprise" => %w[agent_engine http_connector sql_connector saas_connectors
                        knowledge_base tool_engine advanced_logs webhooks
-                       streaming api_access custom_models sla_support]
+                       streaming api_access custom_models sla_support
+                       profile_fast profile_balanced profile_premium profile_deep_reasoning byok]
   }.freeze
 
   has_many :subscriptions

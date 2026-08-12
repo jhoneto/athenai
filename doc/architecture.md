@@ -598,3 +598,40 @@ app/jobs/
 | Webhooks | `kind: :webhook` em `Tool`, `Tool::WebhookInvoker` |
 
 As Fases 3–5 (novos adapters de conector, marketplace, produtos verticais) reaproveitam o mesmo contrato de `Connector::Adapters::Base` e `Tool`, sem exigir mudança estrutural.
+
+---
+
+## 11. Posicionamento competitivo
+
+> Levantamento pontual (pesquisa web, não uma análise de mercado formal/recorrente) para situar o Athenai frente a concorrentes. Revisitar quando a Fase 1 estiver mais avançada.
+
+### 11.1 Concorrente internacional de referência — Pipefy
+
+O [Pipefy](https://www.pipefy.com/pt-br/) é o concorrente mais citado no espaço de "agentes de IA para empresa" no Brasil, mas resolve um problema diferente:
+
+| Dimensão | Pipefy | Athenai |
+|---|---|---|
+| Modelo de distribuição | SaaS direto para times de negócio (Financeiro, RH, Compras) | API First para **software houses** embutirem em produto próprio (B2B2B) |
+| Camada principal | BPM/workflow no-code (pipes, kanban, formulários, portais) com agentes rodando *dentro* do processo | Infraestrutura de agente (Agent Engine + Connector Layer + Tool Engine + Knowledge Base), sem builder visual de processo |
+| Multi-LLM | Sim | Sim (`RubyLLM`) |
+| Cobrança por créditos (não por token) | Sim | Sim (`doc/cobrancao.md`, AI Credits) |
+| Governança/auditoria por agente | Sim | Sim (`ToolCall`, `AgentTool#constraints`) |
+
+As semelhanças (multi-LLM, créditos, governança) são convergência natural do mercado, não sobreposição de produto — o `doc/resume_agent_platform.md` já rejeita explicitamente o modelo "builder visual de agente/processo" (Pipefy, Dify, Flowise, Langflow) como direção do Athenai.
+
+### 11.2 Concorrentes nacionais, por camada
+
+Nenhum concorrente brasileiro identificado cobre a mesma combinação (API-first, para software houses, com Connector Layer + Tool Engine + Knowledge Base + billing em créditos). Os mais próximos cobrem fatias isoladas:
+
+| Camada equivalente | Concorrente | Por que se aproxima | Por que não é o mesmo produto |
+|---|---|---|---|
+| Agent Engine (orquestração conversacional) | **Blip** (Blip Studio) | Cria/gerencia múltiplos agentes de IA, migrando para multi-LLM | Vende direto ao cliente final, focado em canal (WhatsApp/RCS/Messenger), não é API para terceiros embutirem |
+| Agent Engine (CX) | **Zenvia** (Customer Cloud) | Agentes de IA cobrindo a jornada do cliente, multicanal | Também venda direta (B2B), não infraestrutura B2B2B |
+| Agent Engine (varejo/atendimento) | **Weni** (VTEX/ilhasoft) | Agentes de IA open source para atendimento | Foco em WhatsApp/varejo, não em API genérica para qualquer software |
+| Connector Layer / iPaaS | **Digibee** | iPaaS brasileiro com "conectar a qualquer LLM por uma única interface", pipelines reutilizáveis | Foco em automação de integração (hyperautomation), não em agente com tools/knowledge base |
+| Compatibilidade multi-LLM / Security | **Sensedia** | API Management migrando para "AI Gateway agnóstico" (governança multi-modelo/multicloud) | É camada de gateway/governança, não um Agent Engine completo |
+| Agent Engine (framework, não produto comercial nacional) | **CrewAI** | Framework open-source de agentes, fundador brasileiro | Empresa/comunidade global, concorre na camada de "construir vs. usar framework", não no mercado brasileiro como produto |
+
+### 11.3 Leitura
+
+O Athenai não compete hoje com nenhum player nacional ponto a ponto — a combinação exata (infraestrutura de agente vendida a quem constrói software, não a quem opera processo) parece um espaço em aberto no mercado brasileiro atual. O risco de concorrência futura mais provável é: (a) Digibee/Sensedia expandirem de integração/gateway para um Agent Engine completo, ou (b) Blip/Zenvia abrirem uma API própria para terceiros embutirem seus agentes — o que os moveria para o mesmo modelo de distribuição do Athenai.

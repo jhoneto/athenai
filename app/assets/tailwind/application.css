@@ -87,6 +87,10 @@
   .badge-canceled   { @apply bg-slate-100   text-slate-600; }
   .badge-incomplete { @apply bg-red-100     text-red-700; }
 
+  .badge-draft     { @apply bg-slate-100  text-slate-600; }
+  .badge-published { @apply bg-green-100  text-green-800; }
+  .badge-archived  { @apply bg-amber-100  text-amber-800; }
+
   .form-input {
     @apply block w-full rounded-lg border border-border bg-surface
            px-3 py-2 text-text-primary placeholder-text-secondary
