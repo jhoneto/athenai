@@ -1,0 +1,7 @@
+<div id="new_message">
+  <%= form_with model: Message.new, url: chat_session_messages_path(session), class: "flex gap-3" do |f| %>
+    <%= f.text_area :content, rows: 2, class: "form-input flex-1", placeholder: t("messages.form.placeholder"),
+          data: { chat_target: "input", action: "keydown.enter->chat#submitOnEnter" } %>
+    <%= f.submit t("messages.form.send_button"), class: "btn-primary self-end" %>
+  <% end %>
+</div>

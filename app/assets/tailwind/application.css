@@ -91,6 +91,19 @@
   .badge-published { @apply bg-green-100  text-green-800; }
   .badge-archived  { @apply bg-amber-100  text-amber-800; }
 
+  .badge-open   { @apply bg-primary-50  text-primary-700; }
+  .badge-closed { @apply bg-slate-100   text-slate-600; }
+
+  .chat-bubble-user {
+    @apply ml-auto max-w-[80%] rounded-xl rounded-br-sm bg-primary-700 text-white
+           px-4 py-2 text-sm whitespace-pre-wrap;
+  }
+
+  .chat-bubble-assistant {
+    @apply mr-auto max-w-[80%] rounded-xl rounded-bl-sm bg-slate-100 text-text-primary
+           px-4 py-2 text-sm whitespace-pre-wrap;
+  }
+
   .form-input {
     @apply block w-full rounded-lg border border-border bg-surface
            px-3 py-2 text-text-primary placeholder-text-secondary

@@ -1,0 +1,4 @@
+<% assistant = local_assigns[:assistant] || local_assigns[:message] %>
+<div id="<%= dom_id(assistant) %>" class="chat-bubble-assistant">
+  <%= assistant.content.presence || "…" %>
+</div>

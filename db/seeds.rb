@@ -36,14 +36,14 @@ Subscription.find_or_create_by!(account: account) do |subscription|
   subscription.plan   = Plan.find_by!(slug: "growth")
 end
 
-anthropic_model = Llm::Model.find_or_create_by!(provider: "anthropic", model_id: "claude-sonnet-5") do |model|
+Llm::Model.find_or_create_by!(provider: "anthropic", model_id: "claude-sonnet-5") do |model|
   model.name              = "Claude Sonnet 5"
   model.context_window    = 200_000
   model.max_output_tokens = 8_192
   model.pricing           = { input_per_million: 3.0, output_per_million: 15.0 }
 end
 
-gemini_model = Llm::Model.find_or_create_by!(provider: "gemini", model_id: "gemini-flash") do |model|
+Llm::Model.find_or_create_by!(provider: "gemini", model_id: "gemini-flash") do |model|
   model.name              = "Gemini Flash"
   model.context_window    = 1_000_000
   model.max_output_tokens = 8_192
@@ -58,16 +58,16 @@ openai_model = Llm::Model.find_or_create_by!(provider: "openai", model_id: "gpt-
 end
 
 {
-  fast: [ gemini_model, 1 ],
+  fast: [ openai_model, 1 ],
   balanced: [ openai_model, 2 ],
-  premium: [ anthropic_model, 5 ],
-  deep_reasoning: [ anthropic_model, 10 ]
+  premium: [ openai_model, 5 ],
+  deep_reasoning: [ openai_model, 10 ]
 }.each do |key, (model, multiplier)|
-  Llm::Profile.find_or_create_by!(key: key) do |profile|
-    profile.name              = key.to_s.titleize
-    profile.llm_model         = model
-    profile.credit_multiplier = multiplier
-  end
+  profile = Llm::Profile.find_or_initialize_by(key: key)
+  profile.name              = key.to_s.titleize
+  profile.llm_model         = model
+  profile.credit_multiplier = multiplier
+  profile.save!
 end
 
 Agent.find_or_create_by!(account: account, name: "Assistente de Suporte") do |agent|
@@ -81,6 +81,12 @@ Agent.find_or_create_by!(account: account, name: "Analista Financeiro") do |agen
   agent.description   = "Consulta boletos e pagamentos (rascunho, ainda sem publicar)."
   agent.system_prompt = "Você é um analista financeiro que consulta o ERP do cliente."
   agent.llm_profile    = Llm::Profile.find_by!(key: :premium)
+end
+
+support_agent = Agent.find_by!(account: account, name: "Assistente de Suporte")
+
+Session.find_or_create_by!(account: account, agent: support_agent, user: user) do |session|
+  session.title = "Primeira conversa"
 end
 
 puts "Seed concluído: login com admin@athenai.test / password123"

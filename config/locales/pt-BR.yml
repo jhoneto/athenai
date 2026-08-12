@@ -22,6 +22,8 @@ pt-BR:
       subscription_event: "Evento de assinatura"
       account_user: "Membro da conta"
       agent: "Agente"
+      session: "Conversa"
+      message: "Mensagem"
 
     attributes:
       user:
@@ -51,6 +53,11 @@ pt-BR:
       "llm/credential":
         provider: "Provedor"
         encrypted_api_key: "Chave de API"
+      session:
+        title: "Título"
+        agent_id: "Agente"
+      message:
+        content: "Mensagem"
 
     errors:
       messages:
@@ -123,6 +130,7 @@ pt-BR:
   # ── Navegação e UI geral ──────────────────────────────────────────────────────
   nav:
     agents: "Agentes"
+    sessions: "Conversas"
     subscription: "Assinatura"
     llm_credentials: "Credenciais de LLM"
     sign_out: "Sair"
@@ -184,3 +192,23 @@ pt-BR:
     form:
       select_provider: "Selecione um provedor"
       api_key: "Chave de API"
+
+  # ── Conversas (Sessions/Chat) ─────────────────────────────────────────────────
+  sessions:
+    statuses:
+      open: "Em andamento"
+      closed: "Encerrada"
+    index:
+      title: "Conversas"
+      new_button: "Nova conversa"
+      empty: "Nenhuma conversa iniciada ainda."
+      select_agent: "Selecione um agente"
+      no_agents: "Nenhum agente publicado disponível. Publique um agente para iniciar uma conversa."
+      start_button: "Iniciar conversa"
+    show:
+      delete_confirm: "Excluir esta conversa?"
+
+  messages:
+    form:
+      placeholder: "Escreva sua mensagem..."
+      send_button: "Enviar"

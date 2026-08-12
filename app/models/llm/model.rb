@@ -3,7 +3,9 @@ class Llm::Model < ApplicationRecord
 
   SUPPORTED_PROVIDERS = %w[openai anthropic gemini].freeze
 
-  acts_as_model chats: :llm_profiles, chat_class: "Llm::Profile"
+  acts_as_model chats: :sessions, chat_class: "Session"
+
+  has_many :llm_profiles, dependent: :nullify
 
   scope :supported, -> { where(provider: SUPPORTED_PROVIDERS) }
   scope :selectable, -> { supported.where(enabled: true) }

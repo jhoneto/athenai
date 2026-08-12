@@ -11,6 +11,10 @@ Rails.application.routes.draw do
 
   resources :llm_credentials, only: %i[index new create destroy]
 
+  resources :chat_sessions, controller: "sessions", only: %i[index show create destroy] do
+    resources :messages, only: :create
+  end
+
   namespace :webhooks do
     post :stripe, to: "stripe#create"
   end

@@ -37,6 +37,15 @@
             </svg>
             <%= t("nav.agents") %>
           <% end %>
+          <%= link_to chat_sessions_path,
+                class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+                        #{current_page?(chat_sessions_path) ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50 hover:text-text-primary'}" do %>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8-1.5 0-2.91-.32-4.16-.89L3 20l1.02-3.06C3.37 15.7 3 14.4 3 13c0-4.418 4.03-9 9-9s9 3.582 9 8z"/>
+            </svg>
+            <%= t("nav.sessions") %>
+          <% end %>
           <%= link_to billing_path,
                 class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
                         #{current_page?(billing_path) ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50 hover:text-text-primary'}" do %>

@@ -1,0 +1,4 @@
+<% user = local_assigns[:user] || local_assigns[:message] %>
+<div id="<%= dom_id(user) %>" class="chat-bubble-user">
+  <%= user.content %>
+</div>

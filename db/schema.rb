@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_120004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120000) do
     t.index ["llm_model_id"], name: "index_llm_profiles_on_llm_model_id"
   end
 
+  create_table "llm_tool_calls", force: :cascade do |t|
+    t.jsonb "arguments", default: {}
+    t.datetime "created_at", null: false
+    t.bigint "message_id", null: false
+    t.string "name", null: false
+    t.text "thought_signature"
+    t.string "tool_call_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_llm_tool_calls_on_message_id"
+    t.index ["name"], name: "index_llm_tool_calls_on_name"
+    t.index ["tool_call_id"], name: "index_llm_tool_calls_on_tool_call_id", unique: true
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "cache_creation_tokens"
+    t.integer "cached_tokens"
+    t.text "content"
+    t.jsonb "content_raw", default: {}
+    t.datetime "created_at", null: false
+    t.integer "input_tokens"
+    t.bigint "llm_model_id"
+    t.bigint "llm_tool_call_id"
+    t.integer "output_tokens"
+    t.integer "role", null: false
+    t.bigint "session_id", null: false
+    t.text "thinking_signature"
+    t.text "thinking_text"
+    t.integer "thinking_tokens"
+    t.datetime "updated_at", null: false
+    t.index ["llm_model_id"], name: "index_messages_on_llm_model_id"
+    t.index ["llm_tool_call_id"], name: "index_messages_on_llm_tool_call_id"
+    t.index ["session_id", "created_at"], name: "index_messages_on_session_id_and_created_at"
+    t.index ["session_id"], name: "index_messages_on_session_id"
+  end
+
   create_table "plans", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.integer "analyses_per_month"
@@ -99,6 +134,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120000) do
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_plans_on_slug", unique: true
     t.index ["stripe_price_id"], name: "index_plans_on_stripe_price_id", unique: true, where: "(stripe_price_id IS NOT NULL)"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "llm_model_id"
+    t.bigint "llm_profile_id", null: false
+    t.integer "status", default: 0, null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["account_id"], name: "index_sessions_on_account_id"
+    t.index ["agent_id"], name: "index_sessions_on_agent_id"
+    t.index ["llm_model_id"], name: "index_sessions_on_llm_model_id"
+    t.index ["llm_profile_id"], name: "index_sessions_on_llm_profile_id"
+    t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "subscription_events", force: :cascade do |t|
@@ -149,6 +201,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120000) do
   add_foreign_key "agents", "llm_profiles"
   add_foreign_key "llm_credentials", "accounts"
   add_foreign_key "llm_profiles", "llm_models"
+  add_foreign_key "llm_tool_calls", "messages"
+  add_foreign_key "messages", "llm_models"
+  add_foreign_key "messages", "llm_tool_calls"
+  add_foreign_key "messages", "sessions"
+  add_foreign_key "sessions", "accounts"
+  add_foreign_key "sessions", "agents"
+  add_foreign_key "sessions", "llm_models"
+  add_foreign_key "sessions", "llm_profiles"
+  add_foreign_key "sessions", "users"
   add_foreign_key "subscription_events", "subscriptions"
   add_foreign_key "subscriptions", "accounts"
   add_foreign_key "subscriptions", "plans"

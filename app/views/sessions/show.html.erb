@@ -1,0 +1,27 @@
+<div class="w-full" data-controller="chat">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-text-primary"><%= @session.title_or_default %></h1>
+      <p class="text-sm text-text-secondary"><%= @session.agent.name %></p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="badge badge-<%= @session.status %>"><%= t("sessions.statuses.#{@session.status}") %></span>
+      <%= button_to t("actions.delete"), chat_session_path(@session), method: :delete, class: "btn-danger",
+            form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+    </div>
+  </div>
+
+  <%= turbo_stream_from "session_#{@session.id}" %>
+
+  <div class="card w-full flex flex-col h-[60vh]">
+    <div id="messages" data-chat-target="messages" class="flex-1 flex flex-col gap-3 overflow-y-auto pr-2">
+      <% @session.messages.where.not(role: :system).each do |message| %>
+        <%= render message %>
+      <% end %>
+    </div>
+
+    <div class="mt-4 border-t border-border pt-4">
+      <%= render "messages/form", session: @session %>
+    </div>
+  </div>
+</div>
