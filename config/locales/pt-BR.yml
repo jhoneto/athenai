@@ -48,6 +48,9 @@ pt-BR:
         system_prompt: "Prompt do sistema"
         llm_profile_id: "Perfil de IA"
         temperature: "Temperatura"
+      "llm/credential":
+        provider: "Provedor"
+        encrypted_api_key: "Chave de API"
 
     errors:
       messages:
@@ -121,6 +124,7 @@ pt-BR:
   nav:
     agents: "Agentes"
     subscription: "Assinatura"
+    llm_credentials: "Credenciais de LLM"
     sign_out: "Sair"
 
   actions:
@@ -158,3 +162,25 @@ pt-BR:
       publish: "Publicar"
       publish_incomplete: "Agente incompleto para publicação"
       delete_confirm: "Excluir este agente?"
+
+  # ── Credenciais de LLM (BYOK) ─────────────────────────────────────────────────
+  llm_credentials:
+    byok_required: "BYOK disponível apenas no plano Enterprise"
+    providers:
+      openai: "OpenAI"
+      anthropic: "Anthropic"
+      gemini: "Gemini"
+      openrouter: "OpenRouter"
+      vllm: "vLLM"
+      ollama: "Ollama"
+    index:
+      title: "Credenciais de LLM"
+      new_button: "Nova credencial"
+      empty: "Nenhuma credencial cadastrada ainda."
+      masked_key: "•••••••••••••••• (chave configurada)"
+      delete_confirm: "Remover esta credencial?"
+    new:
+      title: "Nova credencial de LLM"
+    form:
+      select_provider: "Selecione um provedor"
+      api_key: "Chave de API"

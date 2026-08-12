@@ -1,0 +1,23 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= t(".title") %></h1>
+    <%= link_to t(".new_button"), new_llm_credential_path, class: "btn-primary" %>
+  </div>
+
+  <div class="card w-full divide-y divide-border">
+    <% if @llm_credentials.empty? %>
+      <p class="text-sm text-text-secondary py-4"><%= t(".empty") %></p>
+    <% end %>
+
+    <% @llm_credentials.each do |llm_credential| %>
+      <div class="flex flex-wrap items-center justify-between gap-2 py-3">
+        <div>
+          <p class="font-medium text-text-primary"><%= t("llm_credentials.providers.#{llm_credential.provider}") %></p>
+          <p class="text-sm text-text-secondary"><%= t(".masked_key") %></p>
+        </div>
+        <%= button_to t("actions.delete"), llm_credential_path(llm_credential), method: :delete, class: "btn-danger",
+              form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+      </div>
+    <% end %>
+  </div>
+</div>

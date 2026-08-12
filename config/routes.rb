@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     member { post :publish }
   end
 
+  resources :llm_credentials, only: %i[index new create destroy]
+
   namespace :webhooks do
     post :stripe, to: "stripe#create"
   end

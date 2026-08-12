@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_11_120002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_120002) do
     t.index ["account_id", "name"], name: "index_agents_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_agents_on_account_id"
     t.index ["llm_profile_id"], name: "index_agents_on_llm_profile_id"
+  end
+
+  create_table "llm_credentials", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.text "encrypted_api_key", null: false
+    t.integer "provider", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "provider"], name: "index_llm_credentials_on_account_id_and_provider", unique: true
+    t.index ["account_id"], name: "index_llm_credentials_on_account_id"
   end
 
   create_table "llm_models", force: :cascade do |t|
@@ -137,6 +147,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_120002) do
   add_foreign_key "account_users", "users"
   add_foreign_key "agents", "accounts"
   add_foreign_key "agents", "llm_profiles"
+  add_foreign_key "llm_credentials", "accounts"
   add_foreign_key "llm_profiles", "llm_models"
   add_foreign_key "subscription_events", "subscriptions"
   add_foreign_key "subscriptions", "accounts"

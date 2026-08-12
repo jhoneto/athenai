@@ -1,0 +1,22 @@
+<%= form_with model: llm_credential, url: llm_credentials_path, class: "card w-full" do |f| %>
+  <% if llm_credential.errors.any? %>
+    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      <%= llm_credential.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div>
+      <%= f.label :provider, class: "form-label" %>
+      <%= f.select :provider, Llm::Credential.providers.keys.map { |key| [ t("llm_credentials.providers.#{key}"), key ] },
+            { include_blank: t("llm_credentials.form.select_provider") }, class: "form-input" %>
+    </div>
+
+    <div>
+      <%= f.label :encrypted_api_key, t("llm_credentials.form.api_key"), class: "form-label" %>
+      <%= f.password_field :encrypted_api_key, class: "form-input", autocomplete: "off" %>
+    </div>
+  </div>
+
+  <%= f.submit t("actions.save"), class: "btn-primary mt-6" %>
+<% end %>

@@ -46,6 +46,17 @@
             </svg>
             <%= t("nav.subscription") %>
           <% end %>
+          <% if current_account&.feature?("byok") %>
+            <%= link_to llm_credentials_path,
+                  class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+                          #{current_page?(llm_credentials_path) ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-50 hover:text-text-primary'}" do %>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 7a2 2 0 012 2m4 0a6 6 0 11-12 0 6 6 0 0112 0zM7 14l-4 4m0 0l2 2m-2-2l2-2"/>
+              </svg>
+              <%= t("nav.llm_credentials") %>
+            <% end %>
+          <% end %>
         </nav>
 
         <%# User %>
