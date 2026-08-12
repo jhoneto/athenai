@@ -1,1 +1,2 @@
-<div id="<%= dom_id(message) %>" class="hidden"></div>
+<% system_message = local_assigns[:system] || local_assigns[:message] %>
+<div id="<%= dom_id(system_message) %>" class="hidden"></div>
