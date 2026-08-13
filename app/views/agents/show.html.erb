@@ -24,6 +24,7 @@
   </div>
 
   <div class="mt-6 flex flex-wrap gap-3">
+    <%= link_to t("agents.show.knowledge_base"), agent_documents_path(@agent), class: "btn-outline" %>
     <%= link_to t("actions.edit"), edit_agent_path(@agent), class: "btn-outline" %>
     <% unless @agent.published? %>
       <%= button_to t(".publish"), publish_agent_path(@agent), method: :post, class: "btn-primary" %>

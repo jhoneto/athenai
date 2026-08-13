@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_120004) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_130004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "vector"
 
   create_table "account_users", force: :cascade do |t|
     t.bigint "account_id", null: false
@@ -31,6 +32,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120004) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "agents", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
@@ -44,6 +73,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120004) do
     t.index ["account_id", "name"], name: "index_agents_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_agents_on_account_id"
     t.index ["llm_profile_id"], name: "index_agents_on_llm_profile_id"
+  end
+
+  create_table "document_chunks", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.bigint "document_id", null: false
+    t.vector "embedding", limit: 1536
+    t.integer "position", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id", "position"], name: "index_document_chunks_on_document_id_and_position", unique: true
+    t.index ["document_id"], name: "index_document_chunks_on_document_id"
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "error"
+    t.string "filename", null: false
+    t.bigint "knowledge_base_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["knowledge_base_id"], name: "index_documents_on_knowledge_base_id"
+  end
+
+  create_table "knowledge_bases", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_knowledge_bases_on_agent_id", unique: true
   end
 
   create_table "llm_credentials", force: :cascade do |t|
@@ -197,8 +254,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_120004) do
 
   add_foreign_key "account_users", "accounts"
   add_foreign_key "account_users", "users"
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agents", "accounts"
   add_foreign_key "agents", "llm_profiles"
+  add_foreign_key "document_chunks", "documents"
+  add_foreign_key "documents", "knowledge_bases", column: "knowledge_base_id"
+  add_foreign_key "knowledge_bases", "agents"
   add_foreign_key "llm_credentials", "accounts"
   add_foreign_key "llm_profiles", "llm_models"
   add_foreign_key "llm_tool_calls", "messages"

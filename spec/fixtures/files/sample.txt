@@ -1,0 +1,1 @@
+This is a sample document used to exercise the knowledge base upload flow in tests.

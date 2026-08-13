@@ -1,0 +1,36 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= t(".title", agent: @knowledge_base.agent.name) %></h1>
+  </div>
+
+  <div class="card w-full mb-6">
+    <%= form_with url: agent_documents_path(@knowledge_base.agent), method: :post, multipart: true do |f| %>
+      <div class="flex flex-wrap items-center gap-3">
+        <%= f.file_field :file, class: "form-input" %>
+        <%= f.submit t(".upload_button"), class: "btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card w-full divide-y divide-border">
+    <% if @documents.empty? %>
+      <p class="text-sm text-text-secondary py-4"><%= t(".empty") %></p>
+    <% end %>
+
+    <% @documents.each do |document| %>
+      <div class="flex flex-wrap items-center justify-between gap-2 py-3">
+        <div>
+          <p class="font-medium text-text-primary"><%= document.filename %></p>
+          <% if document.failed? && document.error.present? %>
+            <p class="text-sm text-red-700"><%= document.error %></p>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="badge badge-<%= document.status %>"><%= t("documents.statuses.#{document.status}") %></span>
+          <%= button_to t("actions.delete"), agent_document_path(@knowledge_base.agent, document), method: :delete, class: "btn-danger",
+                form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

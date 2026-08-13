@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resources :agents do
     member { post :publish }
+    resources :documents, only: %i[index create destroy]
   end
 
   resources :llm_credentials, only: %i[index new create destroy]

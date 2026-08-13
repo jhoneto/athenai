@@ -170,6 +170,20 @@ pt-BR:
       publish: "Publicar"
       publish_incomplete: "Agente incompleto para publicação"
       delete_confirm: "Excluir este agente?"
+      knowledge_base: "Base de conhecimento"
+
+  # ── Base de conhecimento ──────────────────────────────────────────────────────
+  documents:
+    statuses:
+      pending: "Pendente"
+      processing: "Processando"
+      indexed: "Indexado"
+      failed: "Falhou"
+    index:
+      title: "Base de conhecimento — %{agent}"
+      upload_button: "Enviar documento"
+      empty: "Nenhum documento enviado ainda."
+      delete_confirm: "Excluir este documento?"
 
   # ── Credenciais de LLM (BYOK) ─────────────────────────────────────────────────
   llm_credentials:

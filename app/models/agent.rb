@@ -2,6 +2,7 @@ class Agent < ApplicationRecord
   belongs_to :account
   belongs_to :llm_profile, class_name: "Llm::Profile", optional: true
   has_many :sessions, dependent: :destroy
+  has_one :knowledge_base, dependent: :destroy
 
   enum :status, { draft: 0, published: 1, archived: 2 }
 

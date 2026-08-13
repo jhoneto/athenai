@@ -94,6 +94,11 @@
   .badge-open   { @apply bg-primary-50  text-primary-700; }
   .badge-closed { @apply bg-slate-100   text-slate-600; }
 
+  .badge-pending    { @apply bg-slate-100  text-slate-600; }
+  .badge-processing { @apply bg-primary-50 text-primary-700; }
+  .badge-indexed    { @apply bg-green-100  text-green-800; }
+  .badge-failed     { @apply bg-red-100    text-red-700; }
+
   .chat-bubble-user {
     @apply ml-auto max-w-[80%] rounded-xl rounded-br-sm bg-primary-700 text-white
            px-4 py-2 text-sm whitespace-pre-wrap;
