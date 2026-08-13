@@ -24,6 +24,7 @@ gem "rails-i18n"
 gem "stripe", "~> 13.0"
 gem "ruby_llm"
 gem "neighbor"
+gem "faraday"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -66,6 +67,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "faker"
   gem "shoulda-matchers"
+  gem "webmock"
 end
 
 group :development do

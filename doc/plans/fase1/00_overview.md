@@ -14,7 +14,7 @@
 | 3 | [Sessions, Messages & Chat Web](03_sessions_chat.md) | 1, 2 |
 | 4 | [Knowledge Base & RAG simples](04_knowledge_base_rag.md) | 1 |
 | 5 | [Connector Layer — HTTP/OpenAPI](05_connector_http_openapi.md) | 1 |
-| 6 | [Connector Layer — PostgreSQL/MySQL](06_connector_databases.md) | 5 |
+| 6 | [Connector Layer — PostgreSQL](06_connector_databases.md) | 5 |
 | 7 | [API REST v1 + Swagger](07_api_rest_v1.md) | 1, 2, 3, 5, 6 (expõe tudo) |
 | 8 | [AI Credits & Cost Engine](08_ai_credits_cost_engine.md) | 0, 1, 3 — tem uma decisão de produto pendente, ver o plano |
 
@@ -25,7 +25,7 @@
 3. **Sessions/Chat** — primeira entrega demonstrável (Copilot Web conversando com um Agent)
 4. **Knowledge Base/RAG** — pode ser feito em paralelo ao Connector Layer (não depende dele)
 5. **Connector HTTP/OpenAPI** — primeiro tipo de conector, mais simples que banco de dados
-6. **Connector Postgres/MySQL** — reaproveita o contrato de adapter criado no passo 5
+6. **Connector Postgres** — reaproveita o contrato de adapter criado no passo 5 (MySQL/SQL Server/Oracle ficam para fase futura, seguindo o mesmo contrato)
 7. **API REST v1 + Swagger** — expõe tudo publicamente para o software cliente consumir; feito por último pois consolida os endpoints de todos os módulos anteriores
 8. **AI Credits & Cost Engine** — fecha o ciclo comercial; pode ser feito logo após o Plano 3 (não precisa esperar Connector Layer/API), mas exige antes uma decisão de produto sobre o schema de `Subscription` (ver plano)
 

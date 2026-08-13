@@ -5,6 +5,7 @@ class Account < ApplicationRecord
   has_many :agents, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :llm_credentials, class_name: "Llm::Credential", dependent: :destroy
+  has_many :connectors, dependent: :destroy
 
   validates :name, presence: true
 

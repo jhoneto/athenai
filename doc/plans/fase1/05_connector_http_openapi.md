@@ -66,6 +66,10 @@ class Connector < ApplicationRecord
   has_one  :credential, class_name: "Connector::Credential", dependent: :destroy
   has_many :actions, class_name: "Connector::Action", dependent: :destroy
 
+  # Enum propositalmente amplo desde já para não exigir migration quando cada adapter for priorizado.
+  # Fase 1 (Planos 5/6) implementa apenas: rest, openapi, postgres.
+  # Demais valores (mysql, sqlserver, oracle, graphql, gmail, microsoft365, google_drive, sharepoint, s3)
+  # ficam reservados para fase futura — ver doc/architecture.md §4.2.
   enum :kind, {
     postgres: 0, mysql: 1, sqlserver: 2, oracle: 3,
     rest: 4, graphql: 5, openapi: 6,

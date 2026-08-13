@@ -1,12 +1,15 @@
-# Plano 6 — Connector Layer: PostgreSQL & MySQL
+# Plano 6 — Connector Layer: PostgreSQL
 
 > Reaproveita o contrato criado no Plano 5 (`Connector`, `Connector::Credential`, `Connector::Action`, `Connector::Adapters::Base`). Nenhuma migration nova é necessária — apenas novos adapters e regras de segurança específicas de banco de dados.
+>
+> MySQL, SQL Server e Oracle ficam fora da Fase 1 — mesmo tratamento dado a Gmail/Microsoft365/S3 em `doc/architecture.md` §4.2: adapters futuros que seguem o mesmo contrato quando forem priorizados.
 
 ## Objetivo
 
-- Adapters `Connector::Adapters::Postgres` e `::Mysql`
+- Adapter `Connector::Adapters::Postgres`
 - Execução **exclusiva** de `Connector::Action` pré-cadastradas (queries nomeadas e parametrizadas) — nunca SQL livre vindo do LLM ou do usuário final
 - Conexão isolada por connector, nunca reaproveitando a conexão principal da aplicação
+- Lógica de enforcement (`LIMIT`, timeout) isolada em uma classe intermediária (`RelationalBase`) para que futuros adapters relacionais (MySQL, SQL Server, Oracle) a reaproveitem sem duplicação
 
 ## Regras de segurança (não negociáveis)
 
@@ -33,7 +36,7 @@ end
 
 ## Adapter base para bancos relacionais
 
-`app/models/connector/adapters/relational_base.rb` (classe intermediária compartilhada por Postgres/MySQL — evita duplicar a lógica de `LIMIT`/timeout)
+`app/models/connector/adapters/relational_base.rb` (classe intermediária pensada para ser compartilhada por todo adapter relacional — hoje só `Postgres` a usa, mas evita duplicar a lógica de `LIMIT`/timeout quando MySQL/SQL Server/Oracle forem adicionados em fase futura)
 
 ```ruby
 class Connector::Adapters::RelationalBase < Connector::Adapters::Base
@@ -105,13 +108,13 @@ class Connector::Adapters::Postgres < Connector::Adapters::RelationalBase
 end
 ```
 
-`app/models/connector/adapters/mysql.rb` — mesma estrutura, `adapter: "mysql2"`, timeout via `SET SESSION max_execution_time = ...` (MySQL 8+) ao invés de `statement_timeout`.
+Fase futura: `app/models/connector/adapters/mysql.rb` seguiria a mesma estrutura (`adapter: "mysql2"`, timeout via `SET SESSION max_execution_time = ...` ao invés de `statement_timeout`) — fora do escopo da Fase 1.
 
 **Importante**: `establish_connection` cria um *connection handler* isolado por chamada — nunca reutiliza `ActiveRecord::Base.connection` da aplicação, evitando que uma query de conector vaze para o banco principal do Athenai ou vice-versa. A conexão é sempre removida no `ensure`.
 
 ## Cadastro de `Connector::Action` para banco (Dashboard)
 
-Reaproveita `ConnectorActionsController` do Plano 5 — a única diferença é o formulário: quando `connector.kind` é `postgres`/`mysql`, o campo `definition` vira um textarea de SQL (com highlight via Stimulus, opcional) e `input_schema` continua sendo o JSON Schema dos parâmetros nomeados usados na query (`:cliente_id` no SQL ⇄ `properties.cliente_id` no schema).
+Reaproveita `ConnectorActionsController` do Plano 5 — a única diferença é o formulário: quando `connector.kind` é `postgres`, o campo `definition` vira um textarea de SQL (com highlight via Stimulus, opcional) e `input_schema` continua sendo o JSON Schema dos parâmetros nomeados usados na query (`:cliente_id` no SQL ⇄ `properties.cliente_id` no schema).
 
 ## Botão "Testar ação" (Dashboard)
 
@@ -121,7 +124,6 @@ Já existe desde o Plano 5 (`connector_actions#show` ou ação dedicada `test`) 
 
 - `spec/models/connector/action_spec.rb` — validação `sql_is_read_only` (rejeita `INSERT`, `UPDATE`, `DELETE`, múltiplos statements)
 - `spec/models/connector/adapters/postgres_spec.rb` — usa um banco de teste real (schema mínimo criado no `before(:all)`) para validar que `LIMIT` é aplicado, timeout é setado, e a conexão é sempre removida (`ensure`) mesmo em caso de erro
-- `spec/models/connector/adapters/mysql_spec.rb` — análogo, pode ser `skip`ado em ambientes sem MySQL disponível (`before { skip unless mysql_available? }`)
 - Testes de segurança explícitos: query com `;` é rejeitada antes mesmo de chegar ao adapter
 
 ## Critérios de aceite
@@ -129,4 +131,4 @@ Já existe desde o Plano 5 (`connector_actions#show` ou ação dedicada `test`) 
 - [ ] Nenhuma query com `INSERT`/`UPDATE`/`DELETE`/`DROP` é aceita na criação da `Connector::Action`
 - [ ] Toda execução aplica `LIMIT` e timeout de statement
 - [ ] Conexão de conector nunca vaza para o pool de conexão principal da aplicação
-- [ ] Postgres e MySQL compartilham a mesma lógica de enforcement via `RelationalBase` (sem duplicação)
+- [ ] Lógica de enforcement (`LIMIT`/timeout) fica isolada em `RelationalBase`, pronta para ser reaproveitada por futuros adapters relacionais (MySQL, SQL Server, Oracle) sem duplicação

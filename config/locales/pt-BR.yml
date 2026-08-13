@@ -24,6 +24,8 @@ pt-BR:
       agent: "Agente"
       session: "Conversa"
       message: "Mensagem"
+      connector: "Conector"
+      "connector/action": "Ação do conector"
 
     attributes:
       user:
@@ -58,6 +60,16 @@ pt-BR:
         agent_id: "Agente"
       message:
         content: "Mensagem"
+      connector:
+        name: "Nome"
+        kind: "Tipo"
+        description: "Descrição"
+      "connector/action":
+        name: "Nome"
+        kind: "Tipo"
+        description: "Descrição"
+        definition: "Definição"
+        input_schema: "Schema de entrada"
 
     errors:
       messages:
@@ -133,6 +145,7 @@ pt-BR:
     sessions: "Conversas"
     subscription: "Assinatura"
     llm_credentials: "Credenciais de LLM"
+    connectors: "Conectores"
     sign_out: "Sair"
 
   actions:
@@ -226,3 +239,62 @@ pt-BR:
     form:
       placeholder: "Escreva sua mensagem..."
       send_button: "Enviar"
+
+  # ── Conectores (HTTP/OpenAPI) ─────────────────────────────────────────────────
+  connectors:
+    http_connector_required: "Conectores disponíveis a partir do plano Starter"
+    kinds:
+      postgres: "PostgreSQL"
+      mysql: "MySQL"
+      sqlserver: "SQL Server"
+      oracle: "Oracle"
+      rest: "REST"
+      graphql: "GraphQL"
+      openapi: "OpenAPI"
+      gmail: "Gmail"
+      microsoft365: "Microsoft 365"
+      google_drive: "Google Drive"
+      sharepoint: "SharePoint"
+      s3: "Amazon S3"
+    statuses:
+      pending: "Pendente"
+      connected: "Conectado"
+      error: "Erro"
+      disabled: "Desabilitado"
+    index:
+      title: "Conectores"
+      new_button: "Novo conector"
+      empty: "Nenhum conector cadastrado ainda."
+    new:
+      title: "Novo conector"
+    form:
+      base_url: "URL base"
+      spec_url: "URL da spec OpenAPI"
+      health_path: "Path de health check"
+    show:
+      actions: "Ações"
+      test: "Testar conexão"
+      delete_confirm: "Excluir este conector?"
+    test:
+      testing: "Testando conexão..."
+
+  connector_actions:
+    kinds:
+      query: "Query"
+      http_call: "Chamada HTTP"
+      graphql_call: "Chamada GraphQL"
+      file_search: "Busca de arquivo"
+    index:
+      title: "Ações — %{connector}"
+      new_button: "Nova ação"
+      import_button: "Importar da spec"
+      test_button: "Testar"
+      empty: "Nenhuma ação cadastrada ainda."
+      delete_confirm: "Excluir esta ação?"
+    new:
+      title: "Nova ação"
+    form:
+      definition: "Definição (JSON)"
+      input_schema: "Schema de entrada (JSON)"
+    import:
+      importing: "Importando ações da spec..."

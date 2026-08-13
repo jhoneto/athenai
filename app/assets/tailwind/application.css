@@ -99,6 +99,10 @@
   .badge-indexed    { @apply bg-green-100  text-green-800; }
   .badge-failed     { @apply bg-red-100    text-red-700; }
 
+  .badge-connected { @apply bg-green-100  text-green-800; }
+  .badge-error     { @apply bg-red-100    text-red-700; }
+  .badge-disabled  { @apply bg-slate-100  text-slate-600; }
+
   .chat-bubble-user {
     @apply ml-auto max-w-[80%] rounded-xl rounded-br-sm bg-primary-700 text-white
            px-4 py-2 text-sm whitespace-pre-wrap;

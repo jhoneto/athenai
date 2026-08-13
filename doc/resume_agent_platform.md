@@ -409,7 +409,6 @@ Disponibilizar uma plataforma funcional para uso interno e integração com apli
 - RAG simples
 - Conector HTTP (OpenAPI)
 - PostgreSQL
-- MySQL
 - API REST
 
 ---

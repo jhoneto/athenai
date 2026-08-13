@@ -10,7 +10,7 @@
 - **Multiempresa**: tudo pertence a um `Account` (já existente). Nenhum registro de agente, conector, ferramenta ou sessão existe fora de um account.
 - **Multi-LLM via RubyLLM**: a plataforma nunca expõe o provedor ao cliente. O `Agent` referencia um `Llm::Profile` (`Fast`/`Balanced`/`Premium`/`Deep Reasoning`, ver seção 7), e o `RubyLLM` resolve qual chave/modelo usar por trás dele.
 - **Convenções Rails**: sem `app/services`. Lógica de integração externa vira classe com namespace no model (`Connector::Adapters::Postgres`, `Tool::Executor`). Orquestração assíncrona fica em jobs.
-- **Extensível, não genérico demais**: cada camada (Connector, Tool, Knowledge Base) tem contrato claro, mas o MVP implementa apenas os adapters exigidos pelo Roadmap Fase 1 (HTTP/OpenAPI, PostgreSQL, MySQL).
+- **Extensível, não genérico demais**: cada camada (Connector, Tool, Knowledge Base) tem contrato claro, mas o MVP implementa apenas os adapters exigidos pelo Roadmap Fase 1 (HTTP/OpenAPI, PostgreSQL).
 
 ---
 
@@ -39,7 +39,7 @@
    (adapters por tipo de sistema)
                 │
    ┌─────┬──────┼───────┬────────┐
- Postgres MySQL  REST  OpenAPI  ...
+      Postgres  REST  OpenAPI  ...
 ```
 
 Fluxo de uma requisição típica:
@@ -213,11 +213,11 @@ Adapters da Fase 1:
 
 | Adapter | Estratégia |
 |---|---|
-| `Connector::Adapters::Postgres` / `::Mysql` | Conexão via `ActiveRecord::Base.establish_connection` isolada (connection handler próprio, nunca a conexão principal da app). Executa **apenas** `Connector::Action#definition` pré-cadastradas — nunca SQL livre vindo do LLM. Modo somente leitura reforçado por role de banco (`readonly_user`) quando possível |
+| `Connector::Adapters::Postgres` | Conexão via `ActiveRecord::Base.establish_connection` isolada (connection handler próprio, nunca a conexão principal da app). Executa **apenas** `Connector::Action#definition` pré-cadastradas — nunca SQL livre vindo do LLM. Modo somente leitura reforçado por role de banco (`readonly_user`) quando possível |
 | `Connector::Adapters::Http` | Usa `Faraday` (ou `Net::HTTP` puro) para chamar endpoints REST cadastrados manualmente como `Connector::Action` |
 | `Connector::Adapters::OpenApi` | Importa uma spec OpenAPI (`config[:spec_url]`), gera uma `Connector::Action` por operação automaticamente (`Connector::OpenApiImporter`) |
 
-Adapters futuros (Fase 3) seguem o mesmo contrato: `Connector::Adapters::Gmail`, `::Microsoft365`, `::S3`, `::Sap`, etc. — cada um resolve autenticação (OAuth, API key, IAM) dentro de si mesmo, sem vazar detalhes para o Tool Engine.
+Adapters futuros (Fase 3) seguem o mesmo contrato: `Connector::Adapters::Mysql`, `::Sqlserver`, `::Oracle` (mesma base `RelationalBase` do Postgres), `::Gmail`, `::Microsoft365`, `::S3`, `::Sap`, etc. — cada um resolve autenticação (OAuth, API key, IAM) dentro de si mesmo, sem vazar detalhes para o Tool Engine.
 
 ### 4.4 Ciclo de vida de um Connector
 
@@ -533,7 +533,6 @@ app/models/
     adapters/
       base.rb
       postgres.rb
-      mysql.rb
       http.rb
       open_api.rb
     open_api_importer.rb
@@ -586,7 +585,7 @@ app/jobs/
 | Chat Web, Histórico, Sessions | `Session`, `Message`, `Agent::Runner` |
 | Cobrança em AI Credits | `Llm::CostEngine`, `Llm::Execution` (ver seção 7 e `doc/plans/fase1/08_ai_credits_cost_engine.md`) |
 | Upload de documentos, RAG simples | `KnowledgeBase`, `Document`, `Document::Chunk` |
-| Conector HTTP (OpenAPI), PostgreSQL, MySQL | `Connector`, `Connector::Action`, adapters `Http`/`OpenApi`/`Postgres`/`Mysql` |
+| Conector HTTP (OpenAPI), PostgreSQL | `Connector`, `Connector::Action`, adapters `Http`/`OpenApi`/`Postgres` |
 | API REST | `Api::V1::*Controller` + `rswag` |
 
 | Fase 2 (Beta) | Componente entregue |

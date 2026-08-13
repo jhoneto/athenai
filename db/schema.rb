@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_130004) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -73,6 +73,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_130004) do
     t.index ["account_id", "name"], name: "index_agents_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_agents_on_account_id"
     t.index ["llm_profile_id"], name: "index_agents_on_llm_profile_id"
+  end
+
+  create_table "connector_actions", force: :cascade do |t|
+    t.bigint "connector_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "definition", default: {}, null: false
+    t.text "description"
+    t.jsonb "input_schema", default: {}, null: false
+    t.integer "kind", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["connector_id", "name"], name: "index_connector_actions_on_connector_id_and_name", unique: true
+    t.index ["connector_id"], name: "index_connector_actions_on_connector_id"
+  end
+
+  create_table "connector_credentials", force: :cascade do |t|
+    t.bigint "connector_id", null: false
+    t.datetime "created_at", null: false
+    t.text "encrypted_secrets", null: false
+    t.datetime "expires_at"
+    t.datetime "updated_at", null: false
+    t.index ["connector_id"], name: "index_connector_credentials_on_connector_id", unique: true
+  end
+
+  create_table "connectors", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.jsonb "config", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.integer "kind", null: false
+    t.string "name", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "name"], name: "index_connectors_on_account_id_and_name", unique: true
+    t.index ["account_id"], name: "index_connectors_on_account_id"
   end
 
   create_table "document_chunks", force: :cascade do |t|
@@ -258,6 +293,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_130004) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agents", "accounts"
   add_foreign_key "agents", "llm_profiles"
+  add_foreign_key "connector_actions", "connectors"
+  add_foreign_key "connector_credentials", "connectors"
+  add_foreign_key "connectors", "accounts"
   add_foreign_key "document_chunks", "documents"
   add_foreign_key "documents", "knowledge_bases", column: "knowledge_base_id"
   add_foreign_key "knowledge_bases", "agents"

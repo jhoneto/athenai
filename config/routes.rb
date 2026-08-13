@@ -12,6 +12,14 @@ Rails.application.routes.draw do
 
   resources :llm_credentials, only: %i[index new create destroy]
 
+  resources :connectors do
+    member { post :test }
+    resources :actions, controller: "connector_actions", only: %i[index new create destroy] do
+      collection { post :import }
+      member { post :test }
+    end
+  end
+
   resources :chat_sessions, controller: "sessions", only: %i[index show create destroy] do
     resources :messages, only: :create
   end
