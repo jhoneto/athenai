@@ -1,0 +1,34 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= t(".title", connector: @connector.name) %></h1>
+    <div class="flex gap-3">
+      <% if @connector.openapi? %>
+        <%= button_to t(".import_button"), import_connector_actions_path(@connector), method: :post, class: "btn-outline" %>
+      <% end %>
+      <%= link_to t(".new_button"), new_connector_action_path(@connector), class: "btn-primary" %>
+    </div>
+  </div>
+
+  <div class="card w-full divide-y divide-border">
+    <% if @actions.empty? %>
+      <p class="text-sm text-text-secondary py-4"><%= t(".empty") %></p>
+    <% end %>
+
+    <% @actions.each do |action| %>
+      <div class="flex flex-wrap items-center justify-between gap-2 py-3">
+        <div>
+          <p class="font-medium text-text-primary"><%= action.name %></p>
+          <p class="text-sm text-text-secondary"><%= action.description %></p>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= form_with url: test_connector_action_path(@connector, action), method: :post, class: "flex items-center gap-2" do |f| %>
+            <%= f.text_field :params, value: "{}", class: "form-input", size: 20 %>
+            <%= f.submit t(".test_button"), class: "btn-outline" %>
+          <% end %>
+          <%= button_to t("actions.delete"), connector_action_path(@connector, action), method: :delete, class: "btn-danger",
+                form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_13_120002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -73,6 +73,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_120002) do
     t.index ["account_id", "name"], name: "index_agents_on_account_id_and_name", unique: true
     t.index ["account_id"], name: "index_agents_on_account_id"
     t.index ["llm_profile_id"], name: "index_agents_on_llm_profile_id"
+  end
+
+  create_table "api_keys", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.string "prefix", null: false
+    t.datetime "revoked_at"
+    t.string "token_digest", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_api_keys_on_account_id"
+    t.index ["prefix"], name: "index_api_keys_on_prefix", unique: true
+    t.index ["token_digest"], name: "index_api_keys_on_token_digest", unique: true
   end
 
   create_table "connector_actions", force: :cascade do |t|
@@ -293,6 +307,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_120002) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agents", "accounts"
   add_foreign_key "agents", "llm_profiles"
+  add_foreign_key "api_keys", "accounts"
   add_foreign_key "connector_actions", "connectors"
   add_foreign_key "connector_credentials", "connectors"
   add_foreign_key "connectors", "accounts"

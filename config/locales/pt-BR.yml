@@ -146,6 +146,7 @@ pt-BR:
     subscription: "Assinatura"
     llm_credentials: "Credenciais de LLM"
     connectors: "Conectores"
+    api_docs: "Documentação da API"
     sign_out: "Sair"
 
   actions:
@@ -298,3 +299,42 @@ pt-BR:
       input_schema: "Schema de entrada (JSON)"
     import:
       importing: "Importando ações da spec..."
+
+  # ── Documentação da API ────────────────────────────────────────────────────────
+  docs:
+    api:
+      title: "Documentação da API"
+      subtitle: "Referência da API REST v1 para integrar o Athenai ao seu sistema."
+      open_swagger: "Abrir Swagger"
+      auth_title: "Autenticação"
+      auth_description: "Toda requisição precisa de uma API Key ativa da conta, enviada no cabeçalho Authorization."
+      auth_header_label: "Cabeçalho"
+      agents_title: "Agentes"
+      agents_index_description: "Lista os agentes publicados da conta."
+      agents_show_description: "Detalhes de um agente publicado."
+      chat_title: "Conversas & Mensagens"
+      sessions_create_description: "Cria uma sessão de conversa com um agente publicado."
+      messages_create_description: "Envia uma mensagem e enfileira a resposta do agente."
+      messages_index_description: "Lista o histórico de mensagens de uma sessão."
+      messages_async_note: "O processamento é assíncrono — acompanhe a resposta consultando o histórico de mensagens."
+      example_label: "Exemplo"
+      response_label: "Resposta"
+      connectors_title: "Conectores"
+      connectors_index_description: "Lista os conectores cadastrados na conta."
+      connectors_create_description: "Cadastra um conector e dispara um teste de conexão."
+      connectors_show_description: "Detalhes de um conector."
+      connector_actions_index_description: "Lista as ações cadastradas de um conector."
+      connector_actions_create_description: "Cadastra uma nova ação para o conector."
+      errors_title: "Códigos de erro"
+      table:
+        method: "Método"
+        path: "Rota"
+        description: "Descrição"
+        code: "Código"
+        situation: "Situação"
+      errors:
+        created: "Recurso criado/enfileirado com sucesso."
+        unauthorized: "API Key ausente, inválida ou revogada."
+        not_found: "Recurso não encontrado ou pertence a outra conta."
+        unprocessable: "Dados inválidos. O corpo da resposta traz um objeto errors com os detalhes."
+        too_many_requests: "Limite de requisições excedido para a API Key."

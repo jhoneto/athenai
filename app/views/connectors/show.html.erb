@@ -1,0 +1,32 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-text-primary"><%= @connector.name %></h1>
+    <span class="badge badge-<%= @connector.status %>"><%= t("connectors.statuses.#{@connector.status}") %></span>
+  </div>
+
+  <div class="card w-full">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <p class="form-label"><%= Connector.human_attribute_name(:kind) %></p>
+        <p class="text-text-primary"><%= t("connectors.kinds.#{@connector.kind}") %></p>
+      </div>
+
+      <div>
+        <p class="form-label"><%= t("connectors.form.base_url") %></p>
+        <p class="text-text-primary"><%= @connector.config["base_url"] %></p>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="form-label"><%= Connector.human_attribute_name(:description) %></p>
+        <p class="text-text-primary whitespace-pre-wrap"><%= @connector.description %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <%= link_to t(".actions"), connector_actions_path(@connector), class: "btn-outline" %>
+    <%= button_to t(".test"), test_connector_path(@connector), method: :post, class: "btn-outline" %>
+    <%= button_to t("actions.delete"), connector_path(@connector), method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: t(".delete_confirm") } } %>
+  </div>
+</div>

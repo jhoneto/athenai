@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "listUsers",
+        "summary": "List users",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
+        ]
+      },
+      "post": {
+        "operationId": "createUser",
+        "summary": "Create user",
+        "parameters": []
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check"
+      }
+    }
+  }
+}

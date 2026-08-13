@@ -24,6 +24,23 @@ Rails.application.routes.draw do
     resources :messages, only: :create
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :agents, only: %i[index show]
+      resources :sessions, only: :create do
+        resources :messages, only: %i[index create]
+      end
+      resources :connectors, only: %i[index create show] do
+        resources :actions, controller: "connector_actions", only: %i[index create]
+      end
+    end
+  end
+
+  get "docs", to: "docs#api", as: :docs
+
+  mount Rswag::Ui::Engine => "/api-docs", as: :api_docs
+  mount Rswag::Api::Engine => "/api-docs"
+
   namespace :webhooks do
     post :stripe, to: "stripe#create"
   end

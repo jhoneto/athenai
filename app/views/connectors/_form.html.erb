@@ -1,0 +1,42 @@
+<%= form_with model: connector, class: "card w-full", data: { controller: "connector-form" } do |f| %>
+  <% if connector.errors.any? %>
+    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      <%= connector.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div>
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-input" %>
+    </div>
+
+    <div>
+      <%= f.label :kind, class: "form-label" %>
+      <%= f.select :kind, %w[rest openapi].map { |kind| [ t("connectors.kinds.#{kind}"), kind ] },
+            {}, class: "form-input", data: { connector_form_target: "kind", action: "connector-form#toggleFields" } %>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= f.label :description, class: "form-label" %>
+      <%= f.text_area :description, rows: 2, class: "form-input" %>
+    </div>
+
+    <div>
+      <%= label_tag "connector_config_base_url", t("connectors.form.base_url"), class: "form-label" %>
+      <%= text_field_tag "connector[config][base_url]", connector.config["base_url"], id: "connector_config_base_url", class: "form-input" %>
+    </div>
+
+    <div data-connector-form-target="openapiField">
+      <%= label_tag "connector_config_spec_url", t("connectors.form.spec_url"), class: "form-label" %>
+      <%= text_field_tag "connector[config][spec_url]", connector.config["spec_url"], id: "connector_config_spec_url", class: "form-input" %>
+    </div>
+
+    <div>
+      <%= label_tag "connector_config_health_path", t("connectors.form.health_path"), class: "form-label" %>
+      <%= text_field_tag "connector[config][health_path]", connector.config["health_path"], id: "connector_config_health_path", class: "form-input" %>
+    </div>
+  </div>
+
+  <%= f.submit t("actions.save"), class: "btn-primary mt-6" %>
+<% end %>

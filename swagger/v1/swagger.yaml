@@ -1,0 +1,253 @@
+---
+openapi: 3.0.1
+info:
+  title: Athenai API V1
+  version: v1
+paths:
+  "/api/v1/agents":
+    get:
+      summary: Lists available agents
+      tags:
+      - Agents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: returns only published agents for the current account
+        '401':
+          description: unauthorized without a valid api key
+  "/api/v1/agents/{id}":
+    get:
+      summary: Retrieves an agent
+      tags:
+      - Agents
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: agent found
+        '404':
+          description: agent belongs to another account
+  "/api/v1/connectors":
+    get:
+      summary: Lists connectors
+      tags:
+      - Connectors
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: returns only connectors for the current account
+    post:
+      summary: Creates a connector and enqueues a connection test
+      tags:
+      - Connectors
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: connector created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connector:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    kind:
+                      type: string
+                    config:
+                      type: object
+  "/api/v1/connectors/{id}":
+    get:
+      summary: Retrieves a connector
+      tags:
+      - Connectors
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: connector found
+        '404':
+          description: connector belongs to another account
+  "/api/v1/connectors/{connector_id}/actions":
+    get:
+      summary: Lists connector actions
+      tags:
+      - Connector Actions
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: connector_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: actions found
+    post:
+      summary: Creates a connector action
+      tags:
+      - Connector Actions
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: connector_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: action created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  "/api/v1/sessions/{session_id}/messages":
+    get:
+      summary: Lists messages in a session
+      tags:
+      - Messages
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: messages found
+        '404':
+          description: session belongs to another account
+    post:
+      summary: Sends a message and queues an agent response
+      tags:
+      - Messages
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '202':
+          description: message queued for the agent to respond
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  properties:
+                    content:
+                      type: string
+                  required:
+                  - content
+  "/api/v1/sessions":
+    post:
+      summary: Creates a session for an available agent
+      tags:
+      - Sessions
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: agent_id
+        in: query
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: session created
+        '404':
+          description: agent not found or not published
+        '401':
+          description: unauthorized without a valid api key
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
